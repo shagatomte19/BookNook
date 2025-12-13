@@ -1,0 +1,870 @@
+{
+  "books": [
+    {
+      "id": "b1",
+      "title": "The Chronos Paradox",
+      "author": "Dr. Aris Thorne",
+      "publisher": "Nebula Press",
+      "coverUrl": "https://picsum.photos/seed/b1/300/450",
+      "description": "When time travel becomes a tourist industry, one detective must solve a murder that hasn't happened yet.",
+      "publishedYear": 2042,
+      "genres": ["Sci-Fi", "Mystery", "Time Travel"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 12.99, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b2",
+      "title": "Velvet Shadows",
+      "author": "Elara Vance",
+      "publisher": "Crimson House",
+      "coverUrl": "https://picsum.photos/seed/b2/300/450",
+      "description": "In 1920s Paris, a jazz singer and a retired spy join forces to recover a stolen diamond.",
+      "publishedYear": 2023,
+      "genres": ["Historical Fiction", "Mystery", "Noir"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 15.99, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b3",
+      "title": "The Algorithm of Trees",
+      "author": "Marcus Green",
+      "publisher": "Verdant Books",
+      "coverUrl": "https://picsum.photos/seed/b3/300/450",
+      "description": "A biologist discovers that forests communicate via a biological internet.",
+      "publishedYear": 2024,
+      "genres": ["Sci-Fi", "Eco-Fiction"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 11.99, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b4",
+      "title": "Beneath the Saffron Sky",
+      "author": "Amara Singh",
+      "publisher": "Horizon Literary",
+      "coverUrl": "https://picsum.photos/seed/b4/300/450",
+      "description": "A sweeping multi-generational saga about a family of spice merchants in Rajasthan.",
+      "publishedYear": 2021,
+      "genres": ["Historical Fiction", "Romance"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 10.99, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b5",
+      "title": "Neon Ronin",
+      "author": "Kenji Sato",
+      "publisher": "Cyberia Press",
+      "coverUrl": "https://picsum.photos/seed/b5/300/450",
+      "description": "In a rain-soaked Neo-Tokyo, a samurai with a cybernetic arm seeks redemption.",
+      "publishedYear": 2025,
+      "genres": ["Cyberpunk", "Action"],
+      "priceOptions": [{ "vendor": "Kindle", "price": 4.99, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b6",
+      "title": "The Baker's Grimoire",
+      "author": "Silas Hearth",
+      "publisher": "Whimsy & Ink",
+      "coverUrl": "https://picsum.photos/seed/b6/300/450",
+      "description": "Bread that makes you float, cookies that cure heartbreak.",
+      "publishedYear": 2020,
+      "genres": ["Fantasy", "Cozy"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 9.99, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b7",
+      "title": "Echoes of the Void",
+      "author": "Dr. Aris Thorne",
+      "publisher": "Nebula Press",
+      "coverUrl": "https://picsum.photos/seed/b7/300/450",
+      "description": "Aris Thorne finds himself at the edge of the universe.",
+      "publishedYear": 2045,
+      "genres": ["Sci-Fi", "Cosmic Horror"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 14.99, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b8",
+      "title": "Midnight at the Museum",
+      "author": "Elara Vance",
+      "publisher": "Crimson House",
+      "coverUrl": "https://picsum.photos/seed/b8/300/450",
+      "description": "A children's mystery about a dinosaur skeleton that goes for a walk every night.",
+      "publishedYear": 2022,
+      "genres": ["Children", "Mystery"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 8.99, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b9",
+      "title": "The Silent Orchestra",
+      "author": "Julian Blackwood",
+      "publisher": "Nocturne Publishing",
+      "coverUrl": "https://picsum.photos/seed/b9/300/450",
+      "description": "A conductor discovers that his orchestra's instruments are playing music from another dimension.",
+      "publishedYear": 2021,
+      "genres": ["Horror", "Music"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 13.50, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b10",
+      "title": "Codes of the Ancients",
+      "author": "Dr. Aris Thorne",
+      "publisher": "Nebula Press",
+      "coverUrl": "https://picsum.photos/seed/b10/300/450",
+      "description": "Deciphering the mathematical language of a lost civilization.",
+      "publishedYear": 2038,
+      "genres": ["Sci-Fi", "Thriller"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 11.99, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b11",
+      "title": "The Glass Florist",
+      "author": "Sophia Williams",
+      "publisher": "Whimsy & Ink",
+      "coverUrl": "https://picsum.photos/seed/b11/300/450",
+      "description": "Flowers made of glass that bloom in the moonlight.",
+      "publishedYear": 2019,
+      "genres": ["Fantasy", "Romance"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 10.50, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b12",
+      "title": "Iron Heart",
+      "author": "Kenji Sato",
+      "publisher": "Cyberia Press",
+      "coverUrl": "https://picsum.photos/seed/b12/300/450",
+      "description": "A robot learns to love in a war-torn city.",
+      "publishedYear": 2024,
+      "genres": ["Sci-Fi", "Drama"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 12.00, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b13",
+      "title": "The Last Spice Route",
+      "author": "Amara Singh",
+      "publisher": "Horizon Literary",
+      "coverUrl": "https://picsum.photos/seed/b13/300/450",
+      "description": "A culinary journey across a post-apocalyptic desert.",
+      "publishedYear": 2026,
+      "genres": ["Dystopian", "Cooking"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 14.99, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b14",
+      "title": "Quantum Shadows",
+      "author": "Marcus Chen",
+      "publisher": "Nebula Press",
+      "coverUrl": "https://picsum.photos/seed/b14/300/450",
+      "description": "Spies using quantum entanglement to steal state secrets.",
+      "publishedYear": 2023,
+      "genres": ["Sci-Fi", "Thriller"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 13.99, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b15",
+      "title": "The Venetian Mask",
+      "author": "Sophia Williams",
+      "publisher": "Crimson House",
+      "coverUrl": "https://picsum.photos/seed/b15/300/450",
+      "description": "A masquerade ball in 17th century Venice turns deadly.",
+      "publishedYear": 2020,
+      "genres": ["Historical Fiction", "Mystery"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 11.50, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b16",
+      "title": "Cyber Soul",
+      "author": "Kenji Sato",
+      "publisher": "Cyberia Press",
+      "coverUrl": "https://picsum.photos/seed/b16/300/450",
+      "description": "Can a digitized consciousness haunt a network?",
+      "publishedYear": 2025,
+      "genres": ["Cyberpunk", "Ghost Story"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 12.99, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b17",
+      "title": "Root & Bone",
+      "author": "Marcus Green",
+      "publisher": "Verdant Books",
+      "coverUrl": "https://picsum.photos/seed/b17/300/450",
+      "description": "Dark fantasy about a necromancer who is also a gardener.",
+      "publishedYear": 2022,
+      "genres": ["Fantasy", "Horror"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 10.99, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b18",
+      "title": "Sourdough Sorcery",
+      "author": "Silas Hearth",
+      "publisher": "Whimsy & Ink",
+      "coverUrl": "https://picsum.photos/seed/b18/300/450",
+      "description": "The sequel to The Baker's Grimoire. More bread, more magic.",
+      "publishedYear": 2021,
+      "genres": ["Fantasy", "Cozy"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 9.99, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b19",
+      "title": "The Mumbai Protocol",
+      "author": "Amara Singh",
+      "publisher": "Horizon Literary",
+      "coverUrl": "https://picsum.photos/seed/b19/300/450",
+      "description": "A high-stakes political thriller set in modern India.",
+      "publishedYear": 2023,
+      "genres": ["Thriller", "Politics"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 15.00, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b20",
+      "title": "Starlight Drifter",
+      "author": "Marcus Chen",
+      "publisher": "Nebula Press",
+      "coverUrl": "https://picsum.photos/seed/b20/300/450",
+      "description": "A smuggler with a heart of gold and a ship that falls apart.",
+      "publishedYear": 2024,
+      "genres": ["Sci-Fi", "Adventure"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 13.50, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b21",
+      "title": "The Crimson Key",
+      "author": "Elara Vance",
+      "publisher": "Crimson House",
+      "coverUrl": "https://picsum.photos/seed/b21/300/450",
+      "description": "A locked room mystery set on a zeppelin crossing the Atlantic.",
+      "publishedYear": 2019,
+      "genres": ["Mystery", "Historical Fiction"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 12.50, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b22",
+      "title": "Songs of the Deep",
+      "author": "Julian Blackwood",
+      "publisher": "Nocturne Publishing",
+      "coverUrl": "https://picsum.photos/seed/b22/300/450",
+      "description": "Something ancient wakes up in the Marianas Trench.",
+      "publishedYear": 2020,
+      "genres": ["Horror", "Thriller"],
+      "priceOptions": [{ "vendor": "Kindle", "price": 8.99, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b23",
+      "title": "The Quantum Gardener",
+      "author": "Marcus Green",
+      "publisher": "Verdant Books",
+      "coverUrl": "https://picsum.photos/seed/b23/300/450",
+      "description": "Growing plants in the fourth dimension to save a dying earth.",
+      "publishedYear": 2025,
+      "genres": ["Sci-Fi", "Eco-Fiction"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 16.00, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b24",
+      "title": "The Clockwork Heart",
+      "author": "Sophia Williams",
+      "publisher": "Whimsy & Ink",
+      "coverUrl": "https://picsum.photos/seed/b24/300/450",
+      "description": "A steampunk romance about an automaton who wants a soul.",
+      "publishedYear": 2018,
+      "genres": ["Fantasy", "Romance", "Steampunk"],
+      "priceOptions": [{ "vendor": "Barnes & Noble", "price": 14.50, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b25",
+      "title": "Lost in the Static",
+      "author": "Kenji Sato",
+      "publisher": "Cyberia Press",
+      "coverUrl": "https://picsum.photos/seed/b25/300/450",
+      "description": "A hacker gets trapped in an abandoned server farm.",
+      "publishedYear": 2023,
+      "genres": ["Cyberpunk", "Thriller"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 11.99, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b26",
+      "title": "The Scent of Memory",
+      "author": "Amara Singh",
+      "publisher": "Horizon Literary",
+      "coverUrl": "https://picsum.photos/seed/b26/300/450",
+      "description": "A perfumer solves cold cases using only her nose.",
+      "publishedYear": 2020,
+      "genres": ["Mystery", "Drama"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 13.99, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b27",
+      "title": "Beyond the Event Horizon",
+      "author": "Dr. Aris Thorne",
+      "publisher": "Nebula Press",
+      "coverUrl": "https://picsum.photos/seed/b27/300/450",
+      "description": "What happens when you fall into a black hole and survive?",
+      "publishedYear": 2040,
+      "genres": ["Sci-Fi", "Physics"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 15.99, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b28",
+      "title": "The Cookie Caper",
+      "author": "Silas Hearth",
+      "publisher": "Whimsy & Ink",
+      "coverUrl": "https://picsum.photos/seed/b28/300/450",
+      "description": "Someone stole the royal cookie recipe. A cozy crime novel.",
+      "publishedYear": 2022,
+      "genres": ["Cozy", "Mystery", "Cooking"],
+      "priceOptions": [{ "vendor": "Kindle", "price": 5.99, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b29",
+      "title": "Shadows of the Past",
+      "author": "Elena Fisher",
+      "publisher": "Horizon Literary",
+      "coverUrl": "https://picsum.photos/seed/b29/300/450",
+      "description": "A travel writer discovers a dark secret in a small Italian village.",
+      "publishedYear": 2017,
+      "genres": ["Thriller", "Travel"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 10.99, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b30",
+      "title": "The Void Walker",
+      "author": "Marcus Chen",
+      "publisher": "Nebula Press",
+      "coverUrl": "https://picsum.photos/seed/b30/300/450",
+      "description": "Walking between dimensions is dangerous work.",
+      "publishedYear": 2025,
+      "genres": ["Sci-Fi", "Action"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 14.50, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b31",
+      "title": "The Haunting of Hillside",
+      "author": "Julian Blackwood",
+      "publisher": "Nocturne Publishing",
+      "coverUrl": "https://picsum.photos/seed/b31/300/450",
+      "description": "A classic ghost story with a modern twist.",
+      "publishedYear": 2018,
+      "genres": ["Horror", "Ghost Story"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 9.99, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b32",
+      "title": "Gondola Dreams",
+      "author": "Sophia Williams",
+      "publisher": "Crimson House",
+      "coverUrl": "https://picsum.photos/seed/b32/300/450",
+      "description": "Romance on the canals of Venice.",
+      "publishedYear": 2016,
+      "genres": ["Romance", "Travel"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 11.00, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b33",
+      "title": "The Last Tree",
+      "author": "Marcus Green",
+      "publisher": "Verdant Books",
+      "coverUrl": "https://picsum.photos/seed/b33/300/450",
+      "description": "In a world of concrete, one man guards the last oak.",
+      "publishedYear": 2026,
+      "genres": ["Dystopian", "Eco-Fiction"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 13.50, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b34",
+      "title": "Data Ghosts",
+      "author": "Kenji Sato",
+      "publisher": "Cyberia Press",
+      "coverUrl": "https://picsum.photos/seed/b34/300/450",
+      "description": "Deleted files don't always stay deleted.",
+      "publishedYear": 2021,
+      "genres": ["Cyberpunk", "Tech"],
+      "priceOptions": [{ "vendor": "Kindle", "price": 6.99, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b35",
+      "title": "Spice Markets of Mars",
+      "author": "Amara Singh",
+      "publisher": "Horizon Literary",
+      "coverUrl": "https://picsum.photos/seed/b35/300/450",
+      "description": "Terraforming is hard, but cooking on Mars is harder.",
+      "publishedYear": 2024,
+      "genres": ["Sci-Fi", "Cooking"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 15.00, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b36",
+      "title": "The Time Traveler's Cat",
+      "author": "Dr. Aris Thorne",
+      "publisher": "Whimsy & Ink",
+      "coverUrl": "https://picsum.photos/seed/b36/300/450",
+      "description": "Schrodinger's cat goes on an adventure through history.",
+      "publishedYear": 2039,
+      "genres": ["Sci-Fi", "Humor"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 12.00, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b37",
+      "title": "Paris by Lamplight",
+      "author": "Elara Vance",
+      "publisher": "Crimson House",
+      "coverUrl": "https://picsum.photos/seed/b37/300/450",
+      "description": "A noir detective story set in 1890s Paris.",
+      "publishedYear": 2021,
+      "genres": ["Historical Fiction", "Mystery", "Noir"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 14.00, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b38",
+      "title": "The Yeasty Beast",
+      "author": "Silas Hearth",
+      "publisher": "Whimsy & Ink",
+      "coverUrl": "https://picsum.photos/seed/b38/300/450",
+      "description": "A sourdough starter grows too large and threatens the village.",
+      "publishedYear": 2023,
+      "genres": ["Fantasy", "Humor"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 10.50, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b39",
+      "title": "Passport to Nowhere",
+      "author": "Elena Fisher",
+      "publisher": "Horizon Literary",
+      "coverUrl": "https://picsum.photos/seed/b39/300/450",
+      "description": "A woman finds a passport for a country that doesn't exist.",
+      "publishedYear": 2019,
+      "genres": ["Mystery", "Adventure"],
+      "priceOptions": [{ "vendor": "Kindle", "price": 7.99, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b40",
+      "title": "Solar Winds",
+      "author": "Marcus Chen",
+      "publisher": "Nebula Press",
+      "coverUrl": "https://picsum.photos/seed/b40/300/450",
+      "description": "Sailing the solar winds in a yacht made of light.",
+      "publishedYear": 2022,
+      "genres": ["Sci-Fi", "Adventure"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 13.99, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b41",
+      "title": "The Silent Note",
+      "author": "Julian Blackwood",
+      "publisher": "Nocturne Publishing",
+      "coverUrl": "https://picsum.photos/seed/b41/300/450",
+      "description": "A song that drives listeners mad.",
+      "publishedYear": 2017,
+      "genres": ["Horror", "Music"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 11.50, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b42",
+      "title": "Forest of Whispers",
+      "author": "Marcus Green",
+      "publisher": "Verdant Books",
+      "coverUrl": "https://picsum.photos/seed/b42/300/450",
+      "description": "The trees are talking, and they are angry.",
+      "publishedYear": 2021,
+      "genres": ["Fantasy", "Eco-Fiction"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 12.99, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b43",
+      "title": "Sapphire Seas",
+      "author": "Sophia Williams",
+      "publisher": "Crimson House",
+      "coverUrl": "https://picsum.photos/seed/b43/300/450",
+      "description": "A romance set on a luxury liner in the 1920s.",
+      "publishedYear": 2022,
+      "genres": ["Romance", "Historical Fiction"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 13.00, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b44",
+      "title": "Code Breaker",
+      "author": "Kenji Sato",
+      "publisher": "Cyberia Press",
+      "coverUrl": "https://picsum.photos/seed/b44/300/450",
+      "description": "Breaking the encryption of the human mind.",
+      "publishedYear": 2024,
+      "genres": ["Cyberpunk", "Sci-Fi"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 14.50, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b45",
+      "title": "The Curry Detective",
+      "author": "Amara Singh",
+      "publisher": "Horizon Literary",
+      "coverUrl": "https://picsum.photos/seed/b45/300/450",
+      "description": "Solving crimes over dinner.",
+      "publishedYear": 2018,
+      "genres": ["Mystery", "Cozy", "Cooking"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 10.00, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b46",
+      "title": "Gravity's End",
+      "author": "Dr. Aris Thorne",
+      "publisher": "Nebula Press",
+      "coverUrl": "https://picsum.photos/seed/b46/300/450",
+      "description": "What happens when gravity stops working for 5 minutes a day?",
+      "publishedYear": 2041,
+      "genres": ["Sci-Fi", "Disaster"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 15.50, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b47",
+      "title": "The Rolling Pin",
+      "author": "Silas Hearth",
+      "publisher": "Whimsy & Ink",
+      "coverUrl": "https://picsum.photos/seed/b47/300/450",
+      "description": "A magical rolling pin that flattens problems, literally.",
+      "publishedYear": 2019,
+      "genres": ["Fantasy", "Humor"],
+      "priceOptions": [{ "vendor": "Kindle", "price": 4.99, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b48",
+      "title": "Tokyo Nights",
+      "author": "Elena Fisher",
+      "publisher": "Cyberia Press",
+      "coverUrl": "https://picsum.photos/seed/b48/300/450",
+      "description": "Lost in the neon lights of Shinjuku.",
+      "publishedYear": 2020,
+      "genres": ["Travel", "Drama"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 11.99, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b49",
+      "title": "Orbit",
+      "author": "Marcus Chen",
+      "publisher": "Nebula Press",
+      "coverUrl": "https://picsum.photos/seed/b49/300/450",
+      "description": "Life on a space station is never dull.",
+      "publishedYear": 2021,
+      "genres": ["Sci-Fi", "Slice of Life"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 12.50, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b50",
+      "title": "The Cellar",
+      "author": "Julian Blackwood",
+      "publisher": "Nocturne Publishing",
+      "coverUrl": "https://picsum.photos/seed/b50/300/450",
+      "description": "Don't go down there.",
+      "publishedYear": 2016,
+      "genres": ["Horror"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 8.99, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b51",
+      "title": "Moss & Stone",
+      "author": "Marcus Green",
+      "publisher": "Verdant Books",
+      "coverUrl": "https://picsum.photos/seed/b51/300/450",
+      "description": "A gargoyle and a dryad form an unlikely friendship.",
+      "publishedYear": 2023,
+      "genres": ["Fantasy", "Romance"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 13.00, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b52",
+      "title": "The Glassblower's Daughter",
+      "author": "Sophia Williams",
+      "publisher": "Crimson House",
+      "coverUrl": "https://picsum.photos/seed/b52/300/450",
+      "description": "A historical drama set in Murano.",
+      "publishedYear": 2017,
+      "genres": ["Historical Fiction", "Drama"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 14.00, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b53",
+      "title": "Glitch",
+      "author": "Kenji Sato",
+      "publisher": "Cyberia Press",
+      "coverUrl": "https://picsum.photos/seed/b53/300/450",
+      "description": "The world is a simulation, and it's crashing.",
+      "publishedYear": 2022,
+      "genres": ["Sci-Fi", "Cyberpunk"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 15.00, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b54",
+      "title": "Chai & Chance",
+      "author": "Amara Singh",
+      "publisher": "Horizon Literary",
+      "coverUrl": "https://picsum.photos/seed/b54/300/450",
+      "description": "A chance encounter in a tea shop changes everything.",
+      "publishedYear": 2019,
+      "genres": ["Romance", "Contemporary"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 10.50, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b55",
+      "title": "Theory of Everything",
+      "author": "Dr. Aris Thorne",
+      "publisher": "Nebula Press",
+      "coverUrl": "https://picsum.photos/seed/b55/300/450",
+      "description": "A biography of the universe.",
+      "publishedYear": 2035,
+      "genres": ["Non-Fiction", "Science"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 18.00, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b56",
+      "title": "The Perfect Loaf",
+      "author": "Silas Hearth",
+      "publisher": "Whimsy & Ink",
+      "coverUrl": "https://picsum.photos/seed/b56/300/450",
+      "description": "A quest for the golden grain.",
+      "publishedYear": 2021,
+      "genres": ["Fantasy", "Adventure"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 11.50, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b57",
+      "title": "Postcards from Peru",
+      "author": "Elena Fisher",
+      "publisher": "Horizon Literary",
+      "coverUrl": "https://picsum.photos/seed/b57/300/450",
+      "description": "Hiking the Inca Trail and finding oneself.",
+      "publishedYear": 2018,
+      "genres": ["Travel", "Memoir"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 12.00, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b58",
+      "title": "Moonbase Alpha",
+      "author": "Marcus Chen",
+      "publisher": "Nebula Press",
+      "coverUrl": "https://picsum.photos/seed/b58/300/450",
+      "description": "Murder on the moon.",
+      "publishedYear": 2023,
+      "genres": ["Sci-Fi", "Mystery"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 14.99, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b59",
+      "title": "The Attic",
+      "author": "Julian Blackwood",
+      "publisher": "Nocturne Publishing",
+      "coverUrl": "https://picsum.photos/seed/b59/300/450",
+      "description": "What's in the attic? You don't want to know.",
+      "publishedYear": 2019,
+      "genres": ["Horror"],
+      "priceOptions": [{ "vendor": "Kindle", "price": 7.99, "url": "#", "inStock": true }]
+    },
+    {
+      "id": "b60",
+      "title": "River Song",
+      "author": "Marcus Green",
+      "publisher": "Verdant Books",
+      "coverUrl": "https://picsum.photos/seed/b60/300/450",
+      "description": "The river has a voice, and it demands a sacrifice.",
+      "publishedYear": 2020,
+      "genres": ["Fantasy", "Folklore"],
+      "priceOptions": [{ "vendor": "Amazon", "price": 11.99, "url": "#", "inStock": true }]
+    }
+  ],
+  "authors": [
+    {
+      "id": "a1",
+      "name": "Dr. Aris Thorne",
+      "imageUrl": "https://picsum.photos/seed/a1/400/400",
+      "bio": "A theoretical physicist turned bestselling author, Aris Thorne uses real science to craft mind-bending narratives. He holds a PhD from MIT.",
+      "born": "1980",
+      "topBookIds": ["b1", "b7", "b10", "b27", "b46", "b55"]
+    },
+    {
+      "id": "a2",
+      "name": "Elara Vance",
+      "imageUrl": "https://picsum.photos/seed/a2/400/400",
+      "bio": "Elara Vance writes mysteries with a vintage flair. She lives in a restored lighthouse and collects antique typewriters.",
+      "born": "1985",
+      "topBookIds": ["b2", "b8", "b21", "b37"]
+    },
+    {
+      "id": "a3",
+      "name": "Amara Singh",
+      "imageUrl": "https://picsum.photos/seed/a3/400/400",
+      "bio": "Amara Singh's novels are known for their sensory richness and emotional depth. She divides her time between Mumbai and London.",
+      "born": "1992",
+      "topBookIds": ["b4", "b13", "b19", "b26", "b35", "b45", "b54"]
+    },
+    {
+      "id": "a4",
+      "name": "Kenji Sato",
+      "imageUrl": "https://picsum.photos/seed/a4/400/400",
+      "bio": "Kenji Sato is a pioneer of the 'New Cyberpunk' movement. His stories focus on the intersection of spirituality and technology.",
+      "born": "1995",
+      "topBookIds": ["b5", "b12", "b16", "b25", "b34", "b44", "b53"]
+    },
+     {
+      "id": "a5",
+      "name": "Silas Hearth",
+      "imageUrl": "https://picsum.photos/seed/a5/400/400",
+      "bio": "Silas writes stories that feel like a warm hug. He is a professional baker and uses his culinary knowledge to infuse his fantasy worlds with flavor.",
+      "born": "1970",
+      "topBookIds": ["b6", "b18", "b28", "b38", "b47", "b56"]
+    },
+     {
+      "id": "a6",
+      "name": "Marcus Green",
+      "imageUrl": "https://picsum.photos/seed/a6/400/400",
+      "bio": "Marcus Green is an environmental activist and writer. His fiction serves as a warning and a hope for the future of our planet.",
+      "born": "1988",
+      "topBookIds": ["b3", "b17", "b23", "b33", "b42", "b51", "b60"]
+    },
+    {
+      "id": "a7",
+      "name": "Julian Blackwood",
+      "imageUrl": "https://picsum.photos/seed/a7/400/400",
+      "bio": "Julian Blackwood is a recluse who writes horror novels that keep people up at night. Rumor has it he lives in a haunted house.",
+      "born": "1975",
+      "topBookIds": ["b9", "b22", "b31", "b41", "b50", "b59"]
+    },
+    {
+      "id": "a8",
+      "name": "Sophia Williams",
+      "imageUrl": "https://picsum.photos/seed/a8/400/400",
+      "bio": "Sophia creates lush, historical worlds filled with romance and tragedy. She is an expert on Venetian history.",
+      "born": "1990",
+      "topBookIds": ["b11", "b15", "b24", "b32", "b43", "b52"]
+    },
+    {
+      "id": "a9",
+      "name": "Marcus Chen",
+      "imageUrl": "https://picsum.photos/seed/a9/400/400",
+      "bio": "Marcus Chen focuses on space opera and high-stakes adventure. He loves vintage star maps.",
+      "born": "1978",
+      "topBookIds": ["b14", "b20", "b30", "b40", "b49", "b58"]
+    },
+    {
+      "id": "a10",
+      "name": "Elena Fisher",
+      "imageUrl": "https://picsum.photos/seed/a10/400/400",
+      "bio": "Elena writes travelogues disguised as novels. She has visited over 100 countries.",
+      "born": "1982",
+      "topBookIds": ["b29", "b39", "b48", "b57"]
+    },
+    {
+      "id": "a11",
+      "name": "Oliver Thorne",
+      "imageUrl": "https://picsum.photos/seed/a11/400/400",
+      "bio": "Son of Aris Thorne, Oliver writes children's science books explaining quantum mechanics to toddlers.",
+      "born": "2010",
+      "topBookIds": []
+    },
+    {
+      "id": "a12",
+      "name": "Isabella Rossi",
+      "imageUrl": "https://picsum.photos/seed/a12/400/400",
+      "bio": "An Italian historian who writes dense, academic thrillers about the Vatican archives.",
+      "born": "1965",
+      "topBookIds": []
+    },
+    {
+      "id": "a13",
+      "name": "Kofi Mensah",
+      "imageUrl": "https://picsum.photos/seed/a13/400/400",
+      "bio": "Ghanaian author specializing in Afrofuturism and speculative mythology.",
+      "born": "1989",
+      "topBookIds": []
+    },
+    {
+      "id": "a14",
+      "name": "Li Wei",
+      "imageUrl": "https://picsum.photos/seed/a14/400/400",
+      "bio": "A poet and novelist from Beijing whose work explores the silence between words.",
+      "born": "1994",
+      "topBookIds": []
+    },
+    {
+      "id": "a15",
+      "name": "Sarah Jenkins",
+      "imageUrl": "https://picsum.photos/seed/a15/400/400",
+      "bio": "Editor turned author, Sarah writes cozy mysteries featuring cats who solve crimes.",
+      "born": "1970",
+      "topBookIds": []
+    },
+    {
+      "id": "a16",
+      "name": "David Miller",
+      "imageUrl": "https://picsum.photos/seed/a16/400/400",
+      "bio": "Former detective writing gritty police procedurals based on true events.",
+      "born": "1960",
+      "topBookIds": []
+    },
+    {
+      "id": "a17",
+      "name": "Priya Patel",
+      "imageUrl": "https://picsum.photos/seed/a17/400/400",
+      "bio": "Cookbook author who weaves family history into every recipe.",
+      "born": "1983",
+      "topBookIds": []
+    },
+    {
+      "id": "a18",
+      "name": "Jack London-Bot",
+      "imageUrl": "https://picsum.photos/seed/a18/400/400",
+      "bio": "An AI trained on adventure novels, writing new stories about the wild.",
+      "born": "2023",
+      "topBookIds": []
+    },
+    {
+      "id": "a19",
+      "name": "Emily Brontë-Reborn",
+      "imageUrl": "https://picsum.photos/seed/a19/400/400",
+      "bio": "Gothic romance for the modern era.",
+      "born": "1999",
+      "topBookIds": []
+    },
+    {
+      "id": "a20",
+      "name": "Anonymous",
+      "imageUrl": "https://picsum.photos/seed/a20/400/400",
+      "bio": "The mysterious author behind the 'Whispers' series.",
+      "born": "Unknown",
+      "topBookIds": []
+    }
+  ],
+  "publishers": [
+    {
+      "id": "p1",
+      "name": "Nebula Press",
+      "location": "New York, USA",
+      "website": "https://nebulapress.mock"
+    },
+    {
+      "id": "p2",
+      "name": "Crimson House",
+      "location": "London, UK",
+      "website": "https://crimsonhouse.mock"
+    },
+    {
+      "id": "p3",
+      "name": "Verdant Books",
+      "location": "Portland, USA",
+      "website": "https://verdantbooks.mock"
+    },
+    {
+      "id": "p4",
+      "name": "Cyberia Press",
+      "location": "Tokyo, Japan",
+      "website": "https://cyberiapress.mock"
+    },
+     {
+      "id": "p5",
+      "name": "Horizon Literary",
+      "location": "Toronto, Canada",
+      "website": "https://horizonlit.mock"
+    },
+    {
+      "id": "p6",
+      "name": "Whimsy & Ink",
+      "location": "Bath, UK",
+      "website": "https://whimsyink.mock"
+    },
+    {
+      "id": "p7",
+      "name": "Nocturne Publishing",
+      "location": "Seattle, USA",
+      "website": "https://nocturnepub.mock"
+    }
+  ]
+}
