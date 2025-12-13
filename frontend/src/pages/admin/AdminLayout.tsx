@@ -1,6 +1,7 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Book, LogOut, Users, Shield, FileText } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { LayoutDashboard, Book, LogOut, Users, Shield, FileText, ArrowLeft } from 'lucide-react';
+import { useApp } from '../../context/AppContext';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -9,7 +10,14 @@ interface AdminLayoutProps {
 
 const AdminLayout: React.FC<AdminLayoutProps> = ({ children, title }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { adminLogout } = useApp();
   const isActive = (path: string) => location.pathname === path;
+
+  const handleLogout = () => {
+    adminLogout();
+    navigate('/admin/login');
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
@@ -60,11 +68,18 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, title }) => {
             <span className="font-medium">Audit Logs</span>
           </Link>
 
-          <div className="pt-8 mt-8 border-t border-gray-800">
+          <div className="pt-8 mt-8 border-t border-gray-800 space-y-2">
             <Link to="/" className="flex items-center space-x-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors">
-              <LogOut size={20} />
+              <ArrowLeft size={20} />
               <span>Back to Site</span>
             </Link>
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center space-x-3 px-4 py-3 text-red-400 hover:text-white hover:bg-red-900/30 rounded-lg transition-colors"
+            >
+              <LogOut size={20} />
+              <span>Logout</span>
+            </button>
           </div>
         </nav>
       </aside>

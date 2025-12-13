@@ -1,6 +1,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Book, Review, User, Author, Post, Publisher, Group, GroupPost, Theme, DirectMessage } from '../types';
+import api, { authApi, usersApi, booksApi, authorsApi, reviewsApi, postsApi, groupsApi, messagesApi, adminApi, getToken, setToken, removeToken, getAdminToken, setAdminToken, removeAdminToken, adminAuthApi } from '../services/api';
 import { INITIAL_REVIEWS, CURRENT_USER } from '../constants';
 
 // Mock Initial Groups
@@ -90,7 +91,7 @@ const INITIAL_MESSAGES: DirectMessage[] = [
 interface AppContextType {
   books: Book[];
   reviews: Review[];
-  user: User | null; 
+  user: User | null;
   allUsers: User[]; // List of all users in the system
   authors: Author[];
   posts: Post[];
@@ -106,14 +107,14 @@ interface AppContextType {
   getPost: (postId: string) => Post | undefined;
   getUserById: (userId: string) => User | undefined;
   getUserByName: (name: string) => User | undefined;
-  
+
   // Admin & User Content functions
   addBook: (book: Book) => void;
   updateBook: (book: Book) => void;
   deleteBook: (bookId: string) => void;
   addPost: (post: Post) => void;
   toggleAdmin: () => void;
-  
+
   // Social Functions
   followUser: (targetUserId: string) => void;
   unfollowUser: (targetUserId: string) => void;
@@ -126,15 +127,20 @@ interface AppContextType {
   acceptMember: (groupId: string, userId: string) => void;
   rejectMember: (groupId: string, userId: string) => void;
   addGroupPost: (post: GroupPost) => void;
-  
+
   // Auth functions
   login: (email: string, password: string) => Promise<boolean>;
   register: (name: string, email: string, password: string) => Promise<boolean>;
   socialLogin: (provider: 'google' | 'github') => Promise<void>;
   logout: () => void;
-  
+
   // Theme functions
   setTheme: (theme: Theme) => void;
+
+  // Admin Auth
+  adminUser: User | null;
+  adminLogin: (email: string, password: string) => Promise<boolean>;
+  adminLogout: () => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -146,6 +152,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [publishers, setPublishers] = useState<Publisher[]>([]);
   const [reviews, setReviews] = useState<Review[]>(INITIAL_REVIEWS);
   const [user, setUser] = useState<User | null>(null);
+  const [adminUser, setAdminUser] = useState<User | null>(null);
   const [allUsers, setAllUsers] = useState<User[]>(MOCK_USERS);
   const [groups, setGroups] = useState<Group[]>(INITIAL_GROUPS);
   const [groupPosts, setGroupPosts] = useState<GroupPost[]>(INITIAL_GROUP_POSTS);
@@ -165,6 +172,55 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       setThemeState(savedTheme);
       document.documentElement.setAttribute('data-theme', savedTheme);
     }
+  }, []);
+
+  // Check for stored tokens logic
+  useEffect(() => {
+    const initAuth = async () => {
+      // User Token
+      const token = getToken();
+      if (token && !user) {
+        try {
+          const userData = await authApi.getMe();
+          // Map backend snake_case to frontend camelCase
+          const mappedUser = {
+            ...userData,
+            isAdmin: (userData as any).is_admin || false,
+            joinedDate: (userData as any).joined_date || 'N/A',
+            avatarUrl: (userData as any).avatar_url
+          } as unknown as User;
+          setUser(mappedUser);
+        } catch (error) {
+          removeToken();
+        }
+      }
+
+      // Admin Token
+      const adminToken = getAdminToken();
+      if (adminToken && !adminUser) {
+        // Validation via stats call as a proxy for specific admin-me endpoint
+        try {
+          const stats = await adminApi.getDashboardStats();
+          if (stats) {
+            // Set a placeholder admin user object since we validated the token
+            setAdminUser({
+              id: 'admin',
+              name: 'BookNook Admin',
+              email: 'admin@booknook.com',
+              isAdmin: true,
+              isActive: true,
+              joinedDate: 'N/A',
+              followers: [],
+              following: [],
+              bio: 'System Administrator'
+            } as unknown as User);
+          }
+        } catch (error) {
+          removeAdminToken();
+        }
+      }
+    };
+    initAuth();
   }, []);
 
   const setTheme = (newTheme: Theme) => {
@@ -187,7 +243,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
         const data = await dataResponse.json();
         const postsData = await postsResponse.json();
-        
+
         setBooks(data.books || []);
         setAuthors(data.authors || []);
         setPublishers(data.publishers || []);
@@ -219,13 +275,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   // Auth Functions
   const login = async (email: string, password: string): Promise<boolean> => {
     await new Promise(resolve => setTimeout(resolve, 800));
-    
+
     // Check if user exists in mock DB (by fuzzy email logic for demo)
     // For demo, we just reset to CURRENT_USER or create a new one
     // But let's check if we have a mock user for this email logic
     const loggedInUser: User = {
       ...CURRENT_USER,
-      name: email.split('@')[0], 
+      name: email.split('@')[0],
       id: `u-${Date.now()}`
     };
 
@@ -259,8 +315,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const socialUser: User = {
       id: `u-${provider}-${Date.now()}`,
       name: provider === 'google' ? 'Google User' : 'GitHub User',
-      avatarUrl: provider === 'google' 
-        ? 'https://cdn-icons-png.flaticon.com/512/2991/2991148.png' 
+      avatarUrl: provider === 'google'
+        ? 'https://cdn-icons-png.flaticon.com/512/2991/2991148.png'
         : 'https://cdn-icons-png.flaticon.com/512/25/25231.png',
       bio: `Logged in via ${provider === 'google' ? 'Google' : 'GitHub'}.`,
       joinedDate: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
@@ -275,8 +331,45 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('booknook_user');
+    removeToken();
   };
+
+  const adminLogin = async (email: string, password: string) => {
+    try {
+      const response = await adminAuthApi.login({ email, password });
+      setAdminToken(response.access_token);
+
+      // Map response user to our internal User type if needed, 
+      // or just trust the response.
+      // The backend returns UserResponse, which matches our User interface mostly.
+      // We need to map `is_admin` to `isAdmin` if the field names differ.
+      // Checking keys... Backend: is_admin, Frontend: isAdmin (in MOCK_USERS).
+      // But wait! The `api.ts` defines User interface with `is_admin`.
+      // The frontend MOCK_USERS uses `isAdmin`. We have a mismatch in frontend types vs backend types!
+      // Let's check `types.ts`.
+      // Assuming for now we need to map it.
+      const backendUser = response.user as any;
+      const mappedUser: User = {
+        ...backendUser,
+        isAdmin: backendUser.is_admin,
+        joinedDate: backendUser.joined_date || 'N/A',
+        avatarUrl: backendUser.avatar_url
+      };
+
+      setAdminUser(mappedUser);
+      return true;
+    } catch (error) {
+      console.error('Admin login failed:', error);
+      return false;
+    }
+  };
+
+  const adminLogout = () => {
+    removeAdminToken();
+    setAdminUser(null);
+    window.location.hash = '/admin/login';
+  };
+
 
   // Content Actions
   const addReview = (review: Review) => {
@@ -376,7 +469,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   // Social Functions
   const followUser = (targetUserId: string) => {
     if (!user) return;
-    
+
     // Update local user state
     const updatedUser = { ...user, following: [...user.following, targetUserId] };
     setUser(updatedUser);
@@ -438,13 +531,16 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   return (
-    <AppContext.Provider value={{ 
+    <AppContext.Provider value={{
       books, reviews, user, authors, posts, publishers, groups, groupPosts, allUsers, messages, isLoading, theme,
       addReview, getBookReviews, getUserReviews, getPost, getUserById, getUserByName,
       addBook, updateBook, deleteBook, addPost, toggleAdmin,
       createGroup, joinGroup, acceptMember, rejectMember, addGroupPost,
       followUser, unfollowUser, sendMessage, markMessagesRead,
-      login, register, socialLogin, logout, setTheme
+      login, register, socialLogin, logout, setTheme,
+
+      // Admin
+      adminUser, adminLogin, adminLogout
     }}>
       {children}
     </AppContext.Provider>

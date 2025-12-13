@@ -1,9 +1,10 @@
-"""
-Data seeding utility to migrate existing JSON data to the database.
+# """
+# Data seeding utility to migrate existing JSON data to the database.
 
-Run this script to populate the database with initial data from the JSON files.
-Usage: python -m app.utils.seed
-"""
+# Run this script to populate the database with initial data from the JSON files.
+# Usage: python -m app.utils.seed
+# """
+
 import json
 import os
 import uuid

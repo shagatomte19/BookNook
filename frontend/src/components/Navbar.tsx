@@ -11,9 +11,8 @@ const Navbar: React.FC = () => {
   const navigate = useNavigate();
 
   const isActive = (path: string) => location.pathname === path;
-  const linkClass = (path: string) => `flex items-center space-x-1 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-    isActive(path) ? 'text-brand-700 bg-brand-50 shadow-sm' : 'text-gray-600 hover:text-brand-600 hover:bg-gray-50'
-  }`;
+  const linkClass = (path: string) => `flex items-center space-x-1 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${isActive(path) ? 'text-brand-700 bg-brand-50 shadow-sm' : 'text-gray-600 hover:text-brand-600 hover:bg-gray-50'
+    }`;
 
   const handleLogout = () => {
     logout();
@@ -33,7 +32,7 @@ const Navbar: React.FC = () => {
     switch (theme) {
       case 'light': return <Sun size={18} />;
       case 'dark': return <Moon size={18} />;
-      case 'gray': return <Monitor size={18} />; 
+      case 'gray': return <Monitor size={18} />;
       default: return <Sun size={18} />;
     }
   };
@@ -48,7 +47,7 @@ const Navbar: React.FC = () => {
             </div>
             <span className="font-serif text-xl font-bold text-gray-900 tracking-tight">BookNook</span>
           </Link>
-          
+
           <div className="flex items-center gap-4">
             {user ? (
               <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-4 overflow-x-auto no-scrollbar">
@@ -85,33 +84,22 @@ const Navbar: React.FC = () => {
                   <span className="hidden lg:inline">Authors</span>
                 </Link>
 
-                {user.isAdmin && (
-                  <>
-                    <div className="h-6 w-px bg-gray-200 mx-2 hidden sm:block"></div>
-                    <Link to="/admin" className={linkClass('/admin')}>
-                      <LayoutDashboard size={18} />
-                      <span className="hidden lg:inline">Admin</span>
-                    </Link>
-                  </>
-                )}
-                
                 <div className="h-6 w-px bg-gray-200 mx-2 hidden sm:block"></div>
-                
+
                 <div className="flex items-center gap-2">
-                  <Link 
-                    to="/profile" 
-                    className={`flex items-center space-x-2 px-3 py-2 rounded-full text-sm font-medium transition-all ${
-                      isActive('/profile') ? 'ring-2 ring-brand-100' : 'hover:ring-2 hover:ring-gray-100'
-                    }`}
+                  <Link
+                    to="/profile"
+                    className={`flex items-center space-x-2 px-3 py-2 rounded-full text-sm font-medium transition-all ${isActive('/profile') ? 'ring-2 ring-brand-100' : 'hover:ring-2 hover:ring-gray-100'
+                      }`}
                   >
-                    <img 
-                      src={user.avatarUrl} 
-                      alt={user.name} 
+                    <img
+                      src={user.avatarUrl}
+                      alt={user.name}
                       className="h-8 w-8 rounded-full object-cover border border-gray-200"
                     />
                     <span className="hidden md:inline text-gray-700 max-w-[100px] truncate">{user.name.split(' ')[0]}</span>
                   </Link>
-                  <button 
+                  <button
                     onClick={handleLogout}
                     className="p-2 text-gray-400 hover:text-red-500 transition-colors"
                     title="Logout"
@@ -122,8 +110,8 @@ const Navbar: React.FC = () => {
               </div>
             ) : (
               <div className="flex items-center space-x-4">
-                 <Link to="/login" className="text-sm font-medium text-gray-600 hover:text-brand-700">Log In</Link>
-                 <Link to="/register" className="px-4 py-2 bg-brand-600 text-white text-sm font-bold rounded-lg hover:bg-brand-700 shadow-sm transition-colors">Sign Up</Link>
+                <Link to="/login" className="text-sm font-medium text-gray-600 hover:text-brand-700">Log In</Link>
+                <Link to="/register" className="px-4 py-2 bg-brand-600 text-white text-sm font-bold rounded-lg hover:bg-brand-700 shadow-sm transition-colors">Sign Up</Link>
               </div>
             )}
 

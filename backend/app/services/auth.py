@@ -118,3 +118,62 @@ async def get_current_admin_user(
             detail="Admin privileges required"
         )
     return current_user
+
+
+def create_admin_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
+    """Create a JWT access token with admin claim."""
+    to_encode = data.copy()
+    to_encode["is_admin"] = True  # Add admin claim
+    if expires_delta:
+        expire = datetime.now(timezone.utc) + expires_delta
+    else:
+        expire = datetime.now(timezone.utc) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+    return encoded_jwt
+
+
+def decode_admin_token(token: str) -> Optional[TokenData]:
+    """Decode and validate an admin JWT token."""
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        user_id: str = payload.get("sub")
+        email: str = payload.get("email")
+        is_admin: bool = payload.get("is_admin", False)
+        if user_id is None or not is_admin:
+            return None
+        return TokenData(user_id=user_id, email=email)
+    except JWTError:
+        return None
+
+
+async def get_current_admin_from_token(
+    token: Optional[str] = Depends(oauth2_scheme),
+    db: Session = Depends(get_db)
+) -> User:
+    """Get admin user from admin-specific token with is_admin claim."""
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate admin credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    
+    if token is None:
+        raise credentials_exception
+    
+    token_data = decode_admin_token(token)
+    if token_data is None:
+        raise credentials_exception
+    
+    user = db.query(User).filter(User.id == token_data.user_id).first()
+    if user is None or not user.is_admin:
+        raise credentials_exception
+    
+    if not user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin account is deactivated"
+        )
+    
+    return user
+

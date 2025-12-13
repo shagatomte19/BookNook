@@ -14,6 +14,7 @@ from app.services.auth import (
     verify_password,
     get_password_hash,
     create_access_token,
+    create_admin_access_token,
     get_current_user_required,
 )
 
@@ -85,6 +86,42 @@ async def login(user_data: UserLogin, db: Session = Depends(get_db)):
     
     # Create access token
     access_token = create_access_token(
+        data={"sub": user.id, "email": user.email}
+    )
+    
+    return Token(
+        access_token=access_token,
+        token_type="bearer",
+        user=UserResponse.model_validate(user)
+    )
+
+
+@router.post("/admin/login", response_model=Token)
+async def admin_login(user_data: UserLogin, db: Session = Depends(get_db)):
+    """Login for admin users only."""
+    user = db.query(User).filter(User.email == user_data.email).first()
+    
+    if not user or not verify_password(user_data.password, user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    if not user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="User account is deactivated"
+        )
+        
+    if not user.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not authorized for admin access"
+        )
+    
+    # Create admin access token
+    access_token = create_admin_access_token(
         data={"sub": user.id, "email": user.email}
     )
     

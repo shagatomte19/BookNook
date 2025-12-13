@@ -21,6 +21,7 @@ import ContentModeration from './pages/admin/ContentModeration';
 import AuditLogs from './pages/admin/AuditLogs';
 import Recommendations from './pages/Recommendations';
 import Login from './pages/Login';
+import AdminLogin from './pages/admin/AdminLogin';
 import Register from './pages/Register';
 import ChatBot from './components/ChatBot';
 
@@ -36,12 +37,12 @@ const ProtectedRoute: React.FC<{ children: React.ReactElement }> = ({ children }
 };
 
 const ProtectedAdminRoute: React.FC<{ children: React.ReactElement }> = ({ children }) => {
-  const { user, isLoading } = useApp();
+  const { adminUser, isLoading } = useApp();
 
   if (isLoading) return null;
 
-  if (!user || !user.isAdmin) {
-    return <Navigate to="/" replace />;
+  if (!adminUser) {
+    return <Navigate to="/admin/login" replace />;
   }
   return children;
 };
@@ -76,7 +77,9 @@ const App: React.FC = () => {
               <Route path="/groups" element={<ProtectedRoute><Groups /></ProtectedRoute>} />
               <Route path="/group/:id" element={<ProtectedRoute><GroupDetails /></ProtectedRoute>} />
 
-              {/* Admin Routes - Protected */}
+              {/* Admin Routes */}
+              <Route path="/admin/login" element={<AdminLogin />} />
+
               <Route
                 path="/admin"
                 element={

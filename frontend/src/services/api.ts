@@ -173,38 +173,88 @@ export const removeToken = (): void => {
   localStorage.removeItem(TOKEN_KEY);
 };
 
+// Admin Token management
+const ADMIN_TOKEN_KEY = 'booknook_admin_token';
+
+export const getAdminToken = (): string | null => {
+  return localStorage.getItem(ADMIN_TOKEN_KEY);
+};
+
+export const setAdminToken = (token: string): void => {
+  localStorage.setItem(ADMIN_TOKEN_KEY, token);
+};
+
+export const removeAdminToken = (): void => {
+  localStorage.removeItem(ADMIN_TOKEN_KEY);
+};
+
 // API request helper
 async function apiRequest<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<T> {
   const token = getToken();
-  
+
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
     ...options.headers,
   };
-  
+
   if (token) {
     (headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
   }
-  
+
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     ...options,
     headers,
   });
-  
+
   if (!response.ok) {
     const error = await response.json().catch(() => ({ detail: 'An error occurred' }));
     throw { detail: error.detail || 'An error occurred', status: response.status } as ApiError;
   }
-  
+
   // Handle empty responses
   const text = await response.text();
   if (!text) {
     return {} as T;
   }
-  
+
+  return JSON.parse(text) as T;
+}
+
+// Admin API request helper
+async function adminApiRequest<T>(
+  endpoint: string,
+  options: RequestInit = {}
+): Promise<T> {
+  const token = getAdminToken();
+
+  const headers: HeadersInit = {
+    'Content-Type': 'application/json',
+    ...options.headers,
+  };
+
+  if (token) {
+    (headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
+  }
+
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    ...options,
+    headers,
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ detail: 'An error occurred' }));
+    throw { detail: error.detail || 'An error occurred', status: response.status } as ApiError;
+  }
+
+  // Handle empty responses
+  const text = await response.text();
+  if (!text) {
+    return {} as T;
+  }
+
   return JSON.parse(text) as T;
 }
 
@@ -218,16 +268,24 @@ export const authApi = {
       method: 'POST',
       body: JSON.stringify(data),
     }),
-  
+
   login: (data: { email: string; password: string }) =>
     apiRequest<TokenResponse>('/auth/login', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
-  
+
   getMe: () => apiRequest<User>('/auth/me'),
-  
+
   logout: () => apiRequest<{ message: string }>('/auth/logout', { method: 'POST' }),
+};
+
+export const adminAuthApi = {
+  login: (data: { email: string; password: string }) =>
+    apiRequest<TokenResponse>('/auth/admin/login', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
 };
 
 // ============================================
@@ -241,18 +299,18 @@ export const usersApi = {
     if (params?.limit) query.set('limit', params.limit.toString());
     return apiRequest<User[]>(`/users?${query}`);
   },
-  
+
   getById: (userId: string) => apiRequest<User>(`/users/${userId}`),
-  
+
   updateMe: (data: Partial<User>) =>
     apiRequest<User>('/users/me', {
       method: 'PATCH',
       body: JSON.stringify(data),
     }),
-  
+
   follow: (userId: string) =>
     apiRequest<User>(`/users/${userId}/follow`, { method: 'POST' }),
-  
+
   unfollow: (userId: string) =>
     apiRequest<User>(`/users/${userId}/unfollow`, { method: 'POST' }),
 };
@@ -270,21 +328,21 @@ export const booksApi = {
     if (params?.genre) query.set('genre', params.genre);
     return apiRequest<Book[]>(`/books?${query}`);
   },
-  
+
   getById: (bookId: string) => apiRequest<Book>(`/books/${bookId}`),
-  
+
   create: (data: Omit<Book, 'id'>) =>
     apiRequest<Book>('/books', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
-  
+
   update: (bookId: string, data: Partial<Book>) =>
     apiRequest<Book>(`/books/${bookId}`, {
       method: 'PATCH',
       body: JSON.stringify(data),
     }),
-  
+
   delete: (bookId: string) =>
     apiRequest<{ message: string }>(`/books/${bookId}`, { method: 'DELETE' }),
 };
@@ -300,21 +358,21 @@ export const authorsApi = {
     if (params?.limit) query.set('limit', params.limit.toString());
     return apiRequest<Author[]>(`/authors?${query}`);
   },
-  
+
   getById: (authorId: string) => apiRequest<Author>(`/authors/${authorId}`),
-  
+
   create: (data: Omit<Author, 'id'>) =>
     apiRequest<Author>('/authors', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
-  
+
   update: (authorId: string, data: Partial<Author>) =>
     apiRequest<Author>(`/authors/${authorId}`, {
       method: 'PATCH',
       body: JSON.stringify(data),
     }),
-  
+
   delete: (authorId: string) =>
     apiRequest<{ message: string }>(`/authors/${authorId}`, { method: 'DELETE' }),
 };
@@ -332,23 +390,23 @@ export const reviewsApi = {
     if (params?.user_id) query.set('user_id', params.user_id);
     return apiRequest<Review[]>(`/reviews?${query}`);
   },
-  
+
   getByBook: (bookId: string) => apiRequest<Review[]>(`/reviews/book/${bookId}`),
-  
+
   getByUser: (userId: string) => apiRequest<Review[]>(`/reviews/user/${userId}`),
-  
+
   create: (data: { book_id: string; rating: number; content?: string }) =>
     apiRequest<Review>('/reviews', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
-  
+
   update: (reviewId: string, data: Partial<Review>) =>
     apiRequest<Review>(`/reviews/${reviewId}`, {
       method: 'PATCH',
       body: JSON.stringify(data),
     }),
-  
+
   delete: (reviewId: string) =>
     apiRequest<{ message: string }>(`/reviews/${reviewId}`, { method: 'DELETE' }),
 };
@@ -365,21 +423,21 @@ export const postsApi = {
     if (params?.post_type) query.set('post_type', params.post_type);
     return apiRequest<Post[]>(`/posts?${query}`);
   },
-  
+
   getById: (postId: string) => apiRequest<Post>(`/posts/${postId}`),
-  
+
   create: (data: Omit<Post, 'id' | 'author' | 'date' | 'is_approved' | 'created_at'>) =>
     apiRequest<Post>('/posts', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
-  
+
   update: (postId: string, data: Partial<Post>) =>
     apiRequest<Post>(`/posts/${postId}`, {
       method: 'PATCH',
       body: JSON.stringify(data),
     }),
-  
+
   delete: (postId: string) =>
     apiRequest<{ message: string }>(`/posts/${postId}`, { method: 'DELETE' }),
 };
@@ -395,26 +453,26 @@ export const groupsApi = {
     if (params?.limit) query.set('limit', params.limit.toString());
     return apiRequest<Group[]>(`/groups?${query}`);
   },
-  
+
   getById: (groupId: string) => apiRequest<Group>(`/groups/${groupId}`),
-  
+
   create: (data: { name: string; description?: string; image_url?: string; tags?: string[] }) =>
     apiRequest<Group>('/groups', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
-  
+
   join: (groupId: string) =>
     apiRequest<{ message: string }>(`/groups/${groupId}/join`, { method: 'POST' }),
-  
+
   acceptMember: (groupId: string, userId: string) =>
     apiRequest<{ message: string }>(`/groups/${groupId}/accept/${userId}`, { method: 'POST' }),
-  
+
   rejectMember: (groupId: string, userId: string) =>
     apiRequest<{ message: string }>(`/groups/${groupId}/reject/${userId}`, { method: 'POST' }),
-  
+
   getPosts: (groupId: string) => apiRequest<GroupPost[]>(`/groups/${groupId}/posts`),
-  
+
   createPost: (groupId: string, content: string) =>
     apiRequest<GroupPost>(`/groups/${groupId}/posts`, {
       method: 'POST',
@@ -428,15 +486,15 @@ export const groupsApi = {
 
 export const messagesApi = {
   getAll: () => apiRequest<Message[]>('/messages'),
-  
+
   getConversation: (userId: string) => apiRequest<Message[]>(`/messages/conversation/${userId}`),
-  
+
   send: (receiverId: string, content: string) =>
     apiRequest<Message>('/messages', {
       method: 'POST',
       body: JSON.stringify({ receiver_id: receiverId, content }),
     }),
-  
+
   markRead: (senderId: string) =>
     apiRequest<{ message: string }>(`/messages/read/${senderId}`, { method: 'POST' }),
 };
@@ -446,8 +504,8 @@ export const messagesApi = {
 // ============================================
 
 export const adminApi = {
-  getDashboardStats: () => apiRequest<DashboardStats>('/admin/dashboard/stats'),
-  
+  getDashboardStats: () => adminApiRequest<DashboardStats>('/admin/dashboard/stats'),
+
   getUsers: (params?: { skip?: number; limit?: number; search?: string; is_admin?: boolean; is_active?: boolean }) => {
     const query = new URLSearchParams();
     if (params?.skip) query.set('skip', params.skip.toString());
@@ -455,39 +513,39 @@ export const adminApi = {
     if (params?.search) query.set('search', params.search);
     if (params?.is_admin !== undefined) query.set('is_admin', params.is_admin.toString());
     if (params?.is_active !== undefined) query.set('is_active', params.is_active.toString());
-    return apiRequest<User[]>(`/admin/users?${query}`);
+    return adminApiRequest<User[]>(`/admin/users?${query}`);
   },
-  
+
   updateUser: (userId: string, data: Partial<User>) =>
-    apiRequest<User>(`/admin/users/${userId}`, {
+    adminApiRequest<User>(`/admin/users/${userId}`, {
       method: 'PATCH',
       body: JSON.stringify(data),
     }),
-  
+
   deleteUser: (userId: string) =>
-    apiRequest<{ message: string }>(`/admin/users/${userId}`, { method: 'DELETE' }),
-  
+    adminApiRequest<{ message: string }>(`/admin/users/${userId}`, { method: 'DELETE' }),
+
   toggleAdmin: (userId: string) =>
-    apiRequest<User>(`/admin/users/${userId}/toggle-admin`, { method: 'POST' }),
-  
+    adminApiRequest<User>(`/admin/users/${userId}/toggle-admin`, { method: 'POST' }),
+
   toggleActive: (userId: string) =>
-    apiRequest<User>(`/admin/users/${userId}/toggle-active`, { method: 'POST' }),
-  
-  getPendingContent: () => apiRequest<ContentModerationItem[]>('/admin/content/pending'),
-  
+    adminApiRequest<User>(`/admin/users/${userId}/toggle-active`, { method: 'POST' }),
+
+  getPendingContent: () => adminApiRequest<ContentModerationItem[]>('/admin/content/pending'),
+
   approveContent: (type: 'review' | 'post', id: string) =>
-    apiRequest<{ message: string }>(`/admin/content/${type}/${id}/approve`, { method: 'POST' }),
-  
+    adminApiRequest<{ message: string }>(`/admin/content/${type}/${id}/approve`, { method: 'POST' }),
+
   rejectContent: (type: 'review' | 'post', id: string) =>
-    apiRequest<{ message: string }>(`/admin/content/${type}/${id}/reject`, { method: 'POST' }),
-  
+    adminApiRequest<{ message: string }>(`/admin/content/${type}/${id}/reject`, { method: 'POST' }),
+
   getAuditLogs: (params?: { skip?: number; limit?: number; action?: string; resource_type?: string }) => {
     const query = new URLSearchParams();
     if (params?.skip) query.set('skip', params.skip.toString());
     if (params?.limit) query.set('limit', params.limit.toString());
     if (params?.action) query.set('action', params.action);
     if (params?.resource_type) query.set('resource_type', params.resource_type);
-    return apiRequest<AuditLog[]>(`/admin/audit-logs?${query}`);
+    return adminApiRequest<AuditLog[]>(`/admin/audit-logs?${query}`);
   },
 };
 

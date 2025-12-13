@@ -21,7 +21,7 @@ from app.models.audit_log import AuditLog
 from app.schemas.user import UserResponse, UserUpdate
 from app.schemas.review import ReviewResponse
 from app.schemas.post import PostResponse
-from app.services.auth import get_current_admin_user
+from app.services.auth import get_current_admin_from_token
 
 router = APIRouter(prefix="/admin", tags=["Admin"])
 
@@ -91,7 +91,7 @@ def log_admin_action(
 # Dashboard
 @router.get("/dashboard/stats", response_model=DashboardStats)
 async def get_dashboard_stats(
-    current_user: User = Depends(get_current_admin_user),
+    current_user: User = Depends(get_current_admin_from_token),
     db: Session = Depends(get_db)
 ):
     """Get dashboard statistics."""
@@ -135,7 +135,7 @@ async def get_all_users_admin(
     search: Optional[str] = None,
     is_admin: Optional[bool] = None,
     is_active: Optional[bool] = None,
-    current_user: User = Depends(get_current_admin_user),
+    current_user: User = Depends(get_current_admin_from_token),
     db: Session = Depends(get_db)
 ):
     """Get all users with filtering options."""
@@ -162,7 +162,7 @@ async def get_all_users_admin(
 async def update_user_admin(
     user_id: str,
     update_data: UserUpdate,
-    current_user: User = Depends(get_current_admin_user),
+    current_user: User = Depends(get_current_admin_from_token),
     db: Session = Depends(get_db)
 ):
     """Update a user's profile (admin)."""
@@ -202,7 +202,7 @@ async def update_user_admin(
 @router.delete("/users/{user_id}")
 async def delete_user_admin(
     user_id: str,
-    current_user: User = Depends(get_current_admin_user),
+    current_user: User = Depends(get_current_admin_from_token),
     db: Session = Depends(get_db)
 ):
     """Delete a user account (admin)."""
@@ -236,7 +236,7 @@ async def delete_user_admin(
 @router.post("/users/{user_id}/toggle-admin", response_model=UserResponse)
 async def toggle_user_admin_status(
     user_id: str,
-    current_user: User = Depends(get_current_admin_user),
+    current_user: User = Depends(get_current_admin_from_token),
     db: Session = Depends(get_db)
 ):
     """Toggle a user's admin status."""
@@ -270,7 +270,7 @@ async def toggle_user_admin_status(
 @router.post("/users/{user_id}/toggle-active", response_model=UserResponse)
 async def toggle_user_active_status(
     user_id: str,
-    current_user: User = Depends(get_current_admin_user),
+    current_user: User = Depends(get_current_admin_from_token),
     db: Session = Depends(get_db)
 ):
     """Toggle a user's active status (ban/unban)."""
@@ -304,7 +304,7 @@ async def toggle_user_active_status(
 # Content Moderation
 @router.get("/content/pending", response_model=List[ContentModerationItem])
 async def get_pending_content(
-    current_user: User = Depends(get_current_admin_user),
+    current_user: User = Depends(get_current_admin_from_token),
     db: Session = Depends(get_db)
 ):
     """Get all pending content for moderation."""
@@ -343,7 +343,7 @@ async def get_pending_content(
 async def approve_content(
     content_type: str,
     content_id: str,
-    current_user: User = Depends(get_current_admin_user),
+    current_user: User = Depends(get_current_admin_from_token),
     db: Session = Depends(get_db)
 ):
     """Approve pending content."""
@@ -379,7 +379,7 @@ async def approve_content(
 async def reject_content(
     content_type: str,
     content_id: str,
-    current_user: User = Depends(get_current_admin_user),
+    current_user: User = Depends(get_current_admin_from_token),
     db: Session = Depends(get_db)
 ):
     """Reject pending content."""
@@ -418,7 +418,7 @@ async def get_audit_logs(
     limit: int = 100,
     action: Optional[str] = None,
     resource_type: Optional[str] = None,
-    current_user: User = Depends(get_current_admin_user),
+    current_user: User = Depends(get_current_admin_from_token),
     db: Session = Depends(get_db)
 ):
     """Get audit logs with optional filtering."""

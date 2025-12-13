@@ -6,7 +6,7 @@ import StarRating from '../components/StarRating';
 import { BookOpen, Calendar, MapPin, PenTool, Shield } from 'lucide-react';
 
 const Profile: React.FC = () => {
-  const { user, getUserReviews, books, posts, toggleAdmin } = useApp();
+  const { user, getUserReviews, books, posts } = useApp();
   const userReviews = getUserReviews(user.id);
   const userPosts = posts.filter(p => p.author === user.name);
 
@@ -19,15 +19,15 @@ const Profile: React.FC = () => {
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
-            <img 
-              src={user.avatarUrl} 
-              alt={user.name} 
+            <img
+              src={user.avatarUrl}
+              alt={user.name}
               className="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover"
             />
             <div className="flex-1 text-center md:text-left">
               <h1 className="text-3xl font-serif font-bold text-gray-900 mb-2">{user.name}</h1>
               <p className="text-gray-600 mb-4 max-w-lg">{user.bio}</p>
-              
+
               <div className="flex flex-wrap justify-center md:justify-start gap-6 text-sm text-gray-500">
                 <div className="flex items-center gap-1">
                   <Calendar size={16} />
@@ -38,8 +38,8 @@ const Profile: React.FC = () => {
                   <span>{userReviews.length} Reviews</span>
                 </div>
                 <div className="flex items-center gap-1">
-                   <PenTool size={16} />
-                   <span>{userPosts.length} Articles</span>
+                  <PenTool size={16} />
+                  <span>{userPosts.length} Articles</span>
                 </div>
               </div>
             </div>
@@ -49,25 +49,25 @@ const Profile: React.FC = () => {
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
+
           {/* Sidebar Stats (Mock) */}
           <div className="space-y-6">
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-               <h3 className="font-serif font-bold text-gray-900 mb-4">Reading Stats</h3>
-               <div className="space-y-4">
-                 <div className="flex justify-between items-center text-sm">
-                   <span className="text-gray-600">Books read this year</span>
-                   <span className="font-bold text-brand-600">12</span>
-                 </div>
-                 <div className="flex justify-between items-center text-sm">
-                   <span className="text-gray-600">Avg. Rating</span>
-                   <span className="font-bold text-brand-600">4.2</span>
-                 </div>
-                 <div className="w-full bg-gray-100 rounded-full h-2 mt-2">
-                   <div className="bg-brand-500 h-2 rounded-full" style={{ width: '60%' }}></div>
-                 </div>
-                 <p className="text-xs text-gray-400 text-center">Reading Challenge: 12/20</p>
-               </div>
+              <h3 className="font-serif font-bold text-gray-900 mb-4">Reading Stats</h3>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-gray-600">Books read this year</span>
+                  <span className="font-bold text-brand-600">12</span>
+                </div>
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-gray-600">Avg. Rating</span>
+                  <span className="font-bold text-brand-600">4.2</span>
+                </div>
+                <div className="w-full bg-gray-100 rounded-full h-2 mt-2">
+                  <div className="bg-brand-500 h-2 rounded-full" style={{ width: '60%' }}></div>
+                </div>
+                <p className="text-xs text-gray-400 text-center">Reading Challenge: 12/20</p>
+              </div>
             </div>
 
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
@@ -79,50 +79,37 @@ const Profile: React.FC = () => {
               </div>
             </div>
 
-            {/* Account Actions */}
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-              <h3 className="font-serif font-bold text-gray-900 mb-4">Settings</h3>
-              <button 
-                onClick={toggleAdmin}
-                className={`w-full py-2 px-4 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2 ${user.isAdmin ? 'bg-red-50 text-red-600 hover:bg-red-100' : 'bg-brand-50 text-brand-700 hover:bg-brand-100'}`}
-              >
-                <Shield size={16} />
-                <span>{user.isAdmin ? 'Disable Admin Mode' : 'Enable Admin Mode'}</span>
-              </button>
-              <p className="text-xs text-gray-400 mt-2 text-center">
-                {user.isAdmin ? 'You have access to the Admin Dashboard.' : 'Admin features are hidden.'}
-              </p>
-            </div>
+
           </div>
 
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-12">
-            
+
             {/* User Articles Section */}
             <div>
-               <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
-                 <PenTool size={20} className="mr-2 text-brand-600" />
-                 My Articles
-               </h2>
-               <div className="space-y-4">
-                  {userPosts.length > 0 ? (
-                    userPosts.map(post => (
-                      <Link key={post.id} to={`/post/${post.id}`} className="block bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                         <div className="flex justify-between items-start mb-2">
-                           <span className="text-xs font-bold text-brand-600 uppercase tracking-wider bg-brand-50 px-2 py-1 rounded-md">{post.type}</span>
-                           <span className="text-xs text-gray-400">{post.date}</span>
-                         </div>
-                         <h3 className="font-serif font-bold text-lg text-gray-900 mb-2">{post.title}</h3>
-                         <p className="text-sm text-gray-600 line-clamp-2">{post.excerpt}</p>
-                      </Link>
-                    ))
-                  ) : (
-                    <div className="bg-white p-8 rounded-xl border border-gray-100 text-center">
-                       <p className="text-gray-500 text-sm mb-2">You haven't written any articles yet.</p>
-                       <Link to="/" className="text-brand-600 font-medium text-sm hover:underline">Write your first article</Link>
-                    </div>
-                  )}
-               </div>
+              <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                <PenTool size={20} className="mr-2 text-brand-600" />
+                My Articles
+              </h2>
+              <div className="space-y-4">
+                {userPosts.length > 0 ? (
+                  userPosts.map(post => (
+                    <Link key={post.id} to={`/post/${post.id}`} className="block bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                      <div className="flex justify-between items-start mb-2">
+                        <span className="text-xs font-bold text-brand-600 uppercase tracking-wider bg-brand-50 px-2 py-1 rounded-md">{post.type}</span>
+                        <span className="text-xs text-gray-400">{post.date}</span>
+                      </div>
+                      <h3 className="font-serif font-bold text-lg text-gray-900 mb-2">{post.title}</h3>
+                      <p className="text-sm text-gray-600 line-clamp-2">{post.excerpt}</p>
+                    </Link>
+                  ))
+                ) : (
+                  <div className="bg-white p-8 rounded-xl border border-gray-100 text-center">
+                    <p className="text-gray-500 text-sm mb-2">You haven't written any articles yet.</p>
+                    <Link to="/" className="text-brand-600 font-medium text-sm hover:underline">Write your first article</Link>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Reviews List */}
@@ -131,13 +118,13 @@ const Profile: React.FC = () => {
                 <BookOpen size={20} className="mr-2 text-brand-600" />
                 Recent Reviews
               </h2>
-              
+
               <div className="space-y-6">
                 {userReviews.length > 0 ? (
                   userReviews.map(review => {
                     const book = getBookForReview(review.bookId);
                     if (!book) return null;
-                    
+
                     return (
                       <div key={review.id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex gap-6 hover:shadow-md transition-shadow">
                         <Link to={`/book/${book.id}`} className="shrink-0 hidden sm:block">
