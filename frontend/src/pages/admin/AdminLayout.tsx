@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Book, LogOut } from 'lucide-react';
+import { LayoutDashboard, Book, LogOut, Users, Shield, FileText } from 'lucide-react';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -20,20 +20,44 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, title }) => {
           <p className="text-xs text-gray-400 mt-1">Manage BookNook Content</p>
         </div>
         <nav className="p-4 space-y-2">
-          <Link 
-            to="/admin" 
+          <Link
+            to="/admin"
             className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${isActive('/admin') ? 'bg-brand-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white'}`}
           >
             <LayoutDashboard size={20} />
             <span className="font-medium">Dashboard</span>
           </Link>
-          
-          <Link 
-            to="/admin/books" 
+
+          <Link
+            to="/admin/books"
             className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${isActive('/admin/books') ? 'bg-brand-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white'}`}
           >
             <Book size={20} />
             <span className="font-medium">Manage Books</span>
+          </Link>
+
+          <Link
+            to="/admin/users"
+            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${isActive('/admin/users') ? 'bg-brand-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white'}`}
+          >
+            <Users size={20} />
+            <span className="font-medium">User Management</span>
+          </Link>
+
+          <Link
+            to="/admin/moderation"
+            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${isActive('/admin/moderation') ? 'bg-brand-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white'}`}
+          >
+            <Shield size={20} />
+            <span className="font-medium">Content Moderation</span>
+          </Link>
+
+          <Link
+            to="/admin/audit-logs"
+            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${isActive('/admin/audit-logs') ? 'bg-brand-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white'}`}
+          >
+            <FileText size={20} />
+            <span className="font-medium">Audit Logs</span>
           </Link>
 
           <div className="pt-8 mt-8 border-t border-gray-800">
@@ -48,18 +72,18 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, title }) => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="bg-white shadow-sm border-b border-gray-200 py-4 px-6 lg:hidden">
-           <div className="flex justify-between items-center">
-             <span className="font-bold text-gray-900">Admin Panel</span>
-             <Link to="/" className="text-sm text-brand-600">Back to Site</Link>
-           </div>
+          <div className="flex justify-between items-center">
+            <span className="font-bold text-gray-900">Admin Panel</span>
+            <Link to="/" className="text-sm text-brand-600">Back to Site</Link>
+          </div>
         </header>
 
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-6">
           <div className="max-w-7xl mx-auto">
-             <div className="mb-8">
-               <h1 className="text-3xl font-bold text-gray-900">{title}</h1>
-             </div>
-             {children}
+            <div className="mb-8">
+              <h1 className="text-3xl font-bold text-gray-900">{title}</h1>
+            </div>
+            {children}
           </div>
         </main>
       </div>

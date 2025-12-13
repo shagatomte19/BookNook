@@ -16,6 +16,9 @@ import Groups from './pages/Groups';
 import GroupDetails from './pages/GroupDetails';
 import Dashboard from './pages/admin/Dashboard';
 import BookManager from './pages/admin/BookManager';
+import UserManager from './pages/admin/UserManager';
+import ContentModeration from './pages/admin/ContentModeration';
+import AuditLogs from './pages/admin/AuditLogs';
 import Recommendations from './pages/Recommendations';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -23,9 +26,9 @@ import ChatBot from './components/ChatBot';
 
 const ProtectedRoute: React.FC<{ children: React.ReactElement }> = ({ children }) => {
   const { user, isLoading } = useApp();
-  
+
   if (isLoading) return <div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-4 border-brand-600 border-t-transparent rounded-full animate-spin"></div></div>;
-  
+
   if (!user) {
     return <Navigate to="/login" replace />;
   }
@@ -54,7 +57,7 @@ const App: React.FC = () => {
               {/* Public/Auth Routes */}
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              
+
               {/* Protected Content Routes */}
               <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
               <Route path="/search" element={<ProtectedRoute><Search /></ProtectedRoute>} />
@@ -64,35 +67,59 @@ const App: React.FC = () => {
               <Route path="/book/:id" element={<ProtectedRoute><BookDetails /></ProtectedRoute>} />
               <Route path="/post/:id" element={<ProtectedRoute><PostDetails /></ProtectedRoute>} />
               <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-              
+
               {/* Social Routes */}
               <Route path="/user/:userId" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
               <Route path="/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />
-              
+
               {/* Group Routes */}
               <Route path="/groups" element={<ProtectedRoute><Groups /></ProtectedRoute>} />
               <Route path="/group/:id" element={<ProtectedRoute><GroupDetails /></ProtectedRoute>} />
 
               {/* Admin Routes - Protected */}
-              <Route 
-                path="/admin" 
+              <Route
+                path="/admin"
                 element={
                   <ProtectedAdminRoute>
                     <Dashboard />
                   </ProtectedAdminRoute>
-                } 
+                }
               />
-              <Route 
-                path="/admin/books" 
+              <Route
+                path="/admin/books"
                 element={
                   <ProtectedAdminRoute>
                     <BookManager />
                   </ProtectedAdminRoute>
-                } 
+                }
+              />
+              <Route
+                path="/admin/users"
+                element={
+                  <ProtectedAdminRoute>
+                    <UserManager />
+                  </ProtectedAdminRoute>
+                }
+              />
+              <Route
+                path="/admin/moderation"
+                element={
+                  <ProtectedAdminRoute>
+                    <ContentModeration />
+                  </ProtectedAdminRoute>
+                }
+              />
+              <Route
+                path="/admin/audit-logs"
+                element={
+                  <ProtectedAdminRoute>
+                    <AuditLogs />
+                  </ProtectedAdminRoute>
+                }
               />
             </Routes>
           </main>
-          
+
           <ChatBot />
 
           <footer className="bg-white border-t border-gray-200 py-12 text-center">
