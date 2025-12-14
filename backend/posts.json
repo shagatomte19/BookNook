@@ -1,0 +1,108 @@
+{
+  "posts": [
+    {
+      "id": "p1",
+      "type": "spotlight",
+      "title": "Top 5 Time Travel Novels of 2042",
+      "excerpt": "Time travel isn't just for physicists anymore. We explore the best new entries in the genre, featuring Dr. Aris Thorne's latest masterpiece.",
+      "content": "Time travel has always been a staple of science fiction, but 2042 has brought a renaissance to the genre. With the release of Dr. Aris Thorne's *The Chronos Paradox*, we are seeing a shift from simple paradoxes to complex examinations of causality and human nature.\n\n### 1. The Chronos Paradox by Dr. Aris Thorne\nThis book redefines the genre. Thorne, a physicist himself, treats the fourth dimension with a respect and terror that is palpable. The protagonist isn't just fighting bad guys; he's fighting entropy itself.\n\n### 2. Seconds to Midnight\nA fast-paced thriller where the timeline resets every time the clock strikes twelve. Groundhog Day meets Die Hard.\n\n### 3. The Vintage Year\nWhat if you could travel back in time, but only to drink wine? A cozy mystery with a temporal twist.\n\n### 4. Paradox Lost\nA philosophical deep dive into the ethics of changing history. If you kill a tyrant, who replaces them?\n\n### 5. Loop Theory\nA hard sci-fi novel that requires a degree in mathematics to fully appreciate, but is rewarding for those who make the effort.",
+      "author": "BookNook Editorial",
+      "date": "2h ago",
+      "tags": ["Curated List", "Sci-Fi"],
+      "imageUrl": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80"
+    },
+    {
+      "id": "p2",
+      "type": "news",
+      "title": "Crimson House Announces New Noir Series",
+      "excerpt": "The legendary publisher Crimson House is bringing back the golden age of noir with a new lineup of gritty mysteries.",
+      "content": "Crimson House, known for their impeccable taste in historical fiction and mystery, has announced the launch of a new imprint: **Shadow & Street**. \n\nThe imprint will focus exclusively on noir and neo-noir titles. \n\n\"We want to bring back the smoke-filled rooms, the femme fatales, and the moral ambiguity that defined the mid-20th century,\" said lead editor Sarah Jenkins. \"But we also want to modernize it. Give us diverse detectives, new settings, and cyber-noir twists.\"\n\nThe first title, *Velvet Shadows* by Elara Vance, is already making waves with its atmospheric depiction of 1920s Paris. Critics are calling it 'The Maltese Falcon meets Midnight in Paris'.\n\nLook out for more titles dropping in Q3 2024.",
+      "author": "Literary News Bot",
+      "date": "5h ago",
+      "tags": ["News", "Publishing"]
+    },
+    {
+      "id": "p3",
+      "type": "blog",
+      "title": "The Art of Baking Magic",
+      "excerpt": "Silas Hearth discusses how he builds magic systems based on sourdough starters and yeast fermentation.",
+      "content": "Creating a magic system is often about rules. For Silas Hearth, author of *The Baker's Grimoire*, the rules are biological.\n\n\"Yeast is magic,\" Hearth says, dusting flour from his apron. \"It's a living organism that transforms simple ingredients into something complex and alive. That's alchemy.\"\n\nIn his novels, spells aren't cast with wands; they are kneaded into dough. A rising loaf can lift spirits—literally. A dense rye can ground a person against psychic attacks.\n\n**Key principles of Sourdough Sorcery:**\n*   **Time:** Magic cannot be rushed. It needs to prove.\n*   **Temperature:** Heat activates the spell. The oven is the catalyst.\n*   **Feeding:** You must feed your magic (or starter) regularly, or it will die.\n\nHearth's approach brings a tactile, cozy feel to fantasy that resonates with anyone who has ever found comfort in a warm slice of bread.",
+      "author": "Guest Contributor",
+      "date": "1d ago",
+      "tags": ["Interview", "Fantasy", "Cooking"],
+      "imageUrl": "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=80"
+    },
+    {
+      "id": "p4",
+      "type": "blog",
+      "title": "Why We Re-Read Favorites",
+      "excerpt": "There is a comfort in returning to a familiar story. We explore the psychology behind re-reading.",
+      "content": "In a world obsessed with the 'new'—new releases, new authors, new trends—there is a quiet rebellion in picking up a book you have already read.\n\nPsychologists suggest that re-reading offers a form of emotional regulation. It provides:\n*   **Predictability:** In chaotic times, knowing the ending is soothing.\n*   **Nostalgia:** It reconnects us with the person we were when we first read it.\n*   **New Depth:** We notice details we missed the first time.\n\nSo next time you feel guilty for ignoring your 'To Be Read' pile in favor of Harry Potter or Pride and Prejudice for the tenth time, remember: you aren't just reading, you are practicing self-care.",
+      "author": "Sarah Jenkins",
+      "date": "2d ago",
+      "tags": ["Essay", "Opinion", "Psychology"],
+      "imageUrl": "https://images.unsplash.com/photo-1476275466078-4007374efbbe?auto=format&fit=crop&w=800&q=80"
+    },
+    {
+      "id": "p5",
+      "type": "spotlight",
+      "title": "Hidden Gems: Indie Sci-Fi",
+      "excerpt": "Big publishers don't have a monopoly on the future. Check out these incredible indie sci-fi books.",
+      "content": "The indie scene is where the real risks are being taken. While big publishers chase the next Hunger Games, indie authors are exploring weird, wild, and wonderful concepts.\n\n**1. The Silicon God**\nA story told entirely from the perspective of a server farm that gains sentience.\n\n**2. Red Dust, Blue Water**\nTerraforming Mars goes wrong, and colonists must adapt to a hallucination-inducing atmosphere.\n\n**3. The Zero Point**\nA hard physics drama about the discovery of free energy and the corporation trying to suppress it.\n\nSupport indie authors. They are writing the future.",
+      "author": "BookNook Editorial",
+      "date": "3d ago",
+      "tags": ["Indie", "Sci-Fi", "Recommendations"]
+    },
+    {
+      "id": "p6",
+      "type": "news",
+      "title": "Awards Season: The Booker Shortlist",
+      "excerpt": "The shortlist is out, and it is full of surprises. Historical fiction dominates this year.",
+      "content": "The Booker Prize judges have announced their shortlist, and it is a good year for history buffs. Four of the six titles are set in the past.\n\nLeading the pack is *Beneath the Saffron Sky* by Amara Singh, a lush generational saga. Also included is a experimental novel told in the second person, and a translated work from a debut Korean author.\n\nThe winner will be announced next month.",
+      "author": "Literary News Bot",
+      "date": "4d ago",
+      "tags": ["News", "Awards"]
+    },
+    {
+      "id": "p7",
+      "type": "blog",
+      "title": "The Death of the Dust Jacket",
+      "excerpt": "Are dust jackets becoming obsolete in the age of beautiful hardcovers? We debate.",
+      "content": "Walk into any bookstore and you will see it: naked hardcovers. Beautifully embossed, foil-stamped, cloth-bound books that have ditched the flimsy paper wrapper.\n\n**Pros of the Dust Jacket:**\n*   Protects the book.\n*   Can contain more marketing text.\n\n**Cons:**\n*   Tears easily.\n*   Gets in the way of reading.\n*   Hides the actual book design.\n\nWe believe the era of the printed hardcover case is here to stay. It looks better on Instagram, it feels better in the hand, and it generates less waste.",
+      "author": "Design Team",
+      "date": "1w ago",
+      "tags": ["Design", "Opinion"],
+      "imageUrl": "https://images.unsplash.com/photo-1519682337058-a94d519337bc?auto=format&fit=crop&w=800&q=80"
+    },
+    {
+      "id": "p8",
+      "type": "spotlight",
+      "title": "Cozy Mysteries for Autumn",
+      "excerpt": "Sweaters, tea, and murder. The perfect combination.",
+      "content": "As the leaves turn brown, our thoughts turn to cozy murder. There is nothing quite like reading about a poisoning in a quaint English village while you are curled up under a blanket.\n\n**Recommendations:**\n*   *The Teapot Poisoning*\n*   *Death at the Vicarage*\n*   *The Cat Who Solved Crimes*\n\nGrab a pumpkin spice latte and enjoy.",
+      "author": "BookNook Editorial",
+      "date": "1w ago",
+      "tags": ["Mystery", "Seasonal"]
+    },
+    {
+      "id": "p9",
+      "type": "news",
+      "title": "Cyberia Press expands to North America",
+      "excerpt": "The Japanese sci-fi giant is opening offices in Seattle.",
+      "content": "Cyberia Press, the publisher behind hits like *Neon Ronin* and *Iron Heart*, is expanding its operations. They have announced a new headquarters in Seattle, aiming to translate more Japanese speculative fiction for the Western market.\n\nThis is great news for fans of cyberpunk and mecha fiction.",
+      "author": "Literary News Bot",
+      "date": "2w ago",
+      "tags": ["News", "Business"]
+    },
+    {
+      "id": "p10",
+      "type": "blog",
+      "title": "Writing Prompts for November",
+      "excerpt": "Get ready for National Novel Writing Month with these creative sparks.",
+      "content": "It's almost November, which means thousands of writers are preparing to write 50,000 words in 30 days. Here are some prompts to get you started:\n\n1.  You find a door in your house that wasn't there yesterday.\n2.  The last person on Earth hears a knock at the door.\n3.  Your reflection blinks when you don't.\n4.  You wake up on a spaceship with no memory of how you got there.\n\nGood luck, writers!",
+      "author": "Writing Coach",
+      "date": "2w ago",
+      "tags": ["Writing", "NaNoWriMo"]
+    }
+  ]
+}

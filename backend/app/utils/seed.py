@@ -40,7 +40,7 @@ def seed_database():
     try:
         # Find the data files (they should be in the frontend folder)
         project_root = Path(__file__).parent.parent.parent.parent
-        frontend_folder = project_root / "frontend"
+        frontend_folder = project_root / "backend"
         data_file = frontend_folder / "data.json"
         posts_file = frontend_folder / "posts.json"
         
