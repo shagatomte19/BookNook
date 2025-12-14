@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
@@ -23,7 +22,6 @@ const BookDetails: React.FC = () => {
   const [newReviewContent, setNewReviewContent] = useState('');
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [isAiSectionOpen, setIsAiSectionOpen] = useState(false);
-
   const [myShelves, setMyShelves] = useState<Shelf[]>([]);
   const [shelfMessage, setShelfMessage] = useState<string | null>(null);
   const [isShelfDropdownOpen, setIsShelfDropdownOpen] = useState(false);
@@ -31,7 +29,6 @@ const BookDetails: React.FC = () => {
   // Scroll to top on mount and when id changes
   useEffect(() => {
     window.scrollTo(0, 0);
-    // Reset AI state when moving to a new book
     setAiInsight(null);
     setIsAiSectionOpen(false);
     setShelfMessage(null);
@@ -43,13 +40,16 @@ const BookDetails: React.FC = () => {
 
   const handleAddToShelf = async (shelfId: string) => {
     if (!book) return;
+
     try {
       await shelvesApi.addBook(shelfId, book.id);
       setShelfMessage("Added to shelf!");
-      // Refresh shelves to seeing updated state
+      setIsShelfDropdownOpen(false);
+
       if (user) {
         shelvesApi.getUserShelves(user.id).then(setMyShelves);
       }
+
       setTimeout(() => setShelfMessage(null), 3000);
     } catch (e) {
       console.error(e);
@@ -72,8 +72,6 @@ const BookDetails: React.FC = () => {
     return <div className="p-20 text-center text-lg text-gray-500">Book not found.</div>;
   }
 
-  // Calculate Related Books
-  // Criteria: Same Genre OR Same Author, filtering out the current book
   const relatedBooks = books.filter(b =>
     b.id !== book.id && (
       b.author === book.author ||
@@ -85,7 +83,6 @@ const BookDetails: React.FC = () => {
     ? reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length
     : 0;
 
-  // Helper for related cards
   const getRelatedAvgRating = (bookId: string) => {
     const r = getBookReviews(bookId);
     if (r.length === 0) return 0;
@@ -101,7 +98,7 @@ const BookDetails: React.FC = () => {
 
   const handleSubmitReview = (e: React.FormEvent) => {
     e.preventDefault();
-    if (newReviewRating === 0) return;
+    if (newReviewRating === 0 || !user) return;
 
     const review: Review = {
       id: Date.now().toString(),
@@ -135,27 +132,6 @@ const BookDetails: React.FC = () => {
             <img src={book.coverUrl} alt={book.title} className="w-full h-auto object-cover" />
           </div>
 
-          const [isShelfDropdownOpen, setIsShelfDropdownOpen] = useState(false);
-
-  // ... (inside the component body)
-
-  const handleAddToShelf = async (shelfId: string) => {
-    if (!book) return;
-          try {
-            await shelvesApi.addBook(shelfId, book.id);
-          setShelfMessage("Added to shelf!");
-          setIsShelfDropdownOpen(false); // Close on success
-          if (user) {
-            shelvesApi.getUserShelves(user.id).then(setMyShelves);
-      }
-      setTimeout(() => setShelfMessage(null), 3000);
-    } catch (e) {
-            console.error(e);
-          setShelfMessage("Failed to add");
-    }
-  };
-
-          // ... in return statement
           {/* Shelf Actions */}
           <div className="w-full max-w-sm relative">
             <button
@@ -187,226 +163,228 @@ const BookDetails: React.FC = () => {
                 <Link to="/login" className="text-brand-600 font-bold hover:underline">Log in</Link> to manage shelves.
               </div>
             )}
-          </div>
-          {shelfMessage && (
-            <div className="mt-2 text-center text-sm text-brand-600 font-medium animate-fade-in">
-              {shelfMessage}
-            </div>
-          )}
-        </div>
 
-        <div className="w-full max-w-sm space-y-4">
-          <h3 className="text-lg font-serif font-bold text-gray-900 border-b border-gray-100 pb-2">Best Prices</h3>
-          <div className="space-y-3">
-            {book.priceOptions.map((option, idx) => (
-              <a
-                key={idx}
-                href={option.url}
-                className="flex items-center justify-between p-4 rounded-xl border border-gray-200 hover:border-brand-500 hover:shadow-md hover:bg-brand-50/30 transition-all group"
-              >
-                <div className="flex items-center space-x-3">
-                  <ShoppingCart size={18} className="text-gray-400 group-hover:text-brand-600" />
-                  <span className="font-medium text-gray-700">{option.vendor}</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <span className="font-bold text-gray-900">${option.price.toFixed(2)}</span>
-                  {option.inStock ? (
-                    <span className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">In Stock</span>
-                  ) : (
-                    <span className="text-xs text-red-600 bg-red-50 px-2 py-1 rounded-full">OOS</span>
-                  )}
-                  <ExternalLink size={14} className="text-gray-400" />
-                </div>
-              </a>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Right Column: Details & Reviews */}
-      <div className="lg:col-span-8 space-y-10">
-        <div>
-          <div className="flex flex-wrap gap-2 mb-4">
-            {book.genres.map(g => (
-              <span key={g} className="px-3 py-1 rounded-full bg-gray-100 text-gray-600 text-xs font-semibold uppercase tracking-wider">{g}</span>
-            ))}
-          </div>
-          <h1 className="text-4xl sm:text-5xl font-serif font-black text-gray-900 mb-2">{book.title}</h1>
-          <p className="text-xl text-gray-600 mb-2">by <span className="text-brand-700 font-medium">{book.author}</span> ({book.publishedYear})</p>
-          {book.publisher && (
-            <p className="flex items-center text-sm text-gray-500 mb-6">
-              <Building2 size={14} className="mr-1.5" />
-              Published by <span className="text-gray-700 font-medium ml-1">{book.publisher}</span>
-            </p>
-          )}
-
-          <div className="flex items-center space-x-4 mb-8">
-            <div className="flex items-center space-x-2">
-              <StarRating rating={averageRating} size={24} />
-              <span className="text-2xl font-bold text-gray-900">{averageRating.toFixed(1)}</span>
-            </div>
-            <span className="text-gray-400">|</span>
-            <span className="text-gray-600">{reviews.length} Reviews</span>
-          </div>
-
-          <p className="text-lg text-gray-700 leading-relaxed max-w-3xl mb-8">
-            {book.description}
-          </p>
-
-          {/* AI Integration Section - Collapsible */}
-          <div className="border border-brand-200 rounded-2xl overflow-hidden bg-white shadow-sm mb-8">
-            <button
-              onClick={() => setIsAiSectionOpen(!isAiSectionOpen)}
-              className="w-full flex items-center justify-between p-5 bg-gradient-to-r from-brand-50/50 to-white hover:bg-brand-50 transition-colors"
-            >
-              <div className="flex items-center space-x-2 text-brand-800">
-                <Sparkles size={20} className="text-brand-600" />
-                <h3 className="font-serif font-bold text-lg sm:text-xl">Gemini AI Insights</h3>
-              </div>
-              {isAiSectionOpen ? <ChevronUp size={20} className="text-gray-500" /> : <ChevronDown size={20} className="text-gray-500" />}
-            </button>
-
-            {isAiSectionOpen && (
-              <div className="p-6 sm:p-8 bg-white border-t border-brand-100 animate-fade-in">
-                {!aiInsight && !loadingAi && (
-                  <div className="flex flex-col items-center justify-center py-4 text-center space-y-4">
-                    <div className="bg-brand-100 p-3 rounded-full text-brand-600 mb-2">
-                      <Sparkles size={24} />
-                    </div>
-                    <div>
-                      <p className="text-gray-900 font-medium mb-1">Unlock deeper insights</p>
-                      <p className="text-gray-500 text-sm max-w-md mx-auto">
-                        Get a comprehensive summary, key themes, and personalized recommendations powered by Gemini AI.
-                      </p>
-                    </div>
-                    <button
-                      onClick={handleGenerateInsight}
-                      className="px-5 py-2.5 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors shadow-sm text-sm font-medium flex items-center space-x-2"
-                    >
-                      <Sparkles size={16} />
-                      <span>Generate Analysis</span>
-                    </button>
-                  </div>
-                )}
-
-                {loadingAi && (
-                  <div className="space-y-4 animate-pulse py-2">
-                    <div className="flex items-center space-x-2 text-brand-600 text-sm font-medium mb-4">
-                      <Sparkles size={16} className="animate-spin" />
-                      <span>Analyzing "{book.title}"...</span>
-                    </div>
-                    <div className="h-4 bg-gray-100 rounded w-3/4"></div>
-                    <div className="h-4 bg-gray-100 rounded w-full"></div>
-                    <div className="h-4 bg-gray-100 rounded w-5/6"></div>
-                    <div className="h-4 bg-gray-100 rounded w-2/3"></div>
-                  </div>
-                )}
-
-                {aiInsight && (
-                  <div className="prose prose-sm sm:prose-base prose-brand max-w-none text-gray-700">
-                    <ReactMarkdown>{aiInsight}</ReactMarkdown>
-                  </div>
-                )}
+            {shelfMessage && (
+              <div className="mt-2 text-center text-sm text-brand-600 font-medium animate-fade-in">
+                {shelfMessage}
               </div>
             )}
           </div>
-        </div>
 
-        {/* Related Books Section */}
-        <div className="border-t border-gray-200 pt-10 pb-8">
-          <div className="flex items-center mb-6">
-            <Layers size={20} className="mr-2 text-brand-600" />
-            <h2 className="text-2xl font-serif font-bold text-gray-900">Related Books</h2>
-          </div>
-          {relatedBooks.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {relatedBooks.map((relatedBook, idx) => (
-                <div
-                  key={relatedBook.id}
-                  className="animate-fade-in"
-                  style={{ animationDelay: `${idx * 100}ms` }}
+          <div className="w-full max-w-sm space-y-4">
+            <h3 className="text-lg font-serif font-bold text-gray-900 border-b border-gray-100 pb-2">Best Prices</h3>
+            <div className="space-y-3">
+              {book.priceOptions.map((option, idx) => (
+                <a
+                  key={idx}
+                  href={option.url}
+                  className="flex items-center justify-between p-4 rounded-xl border border-gray-200 hover:border-brand-500 hover:shadow-md hover:bg-brand-50/30 transition-all group"
                 >
-                  <BookCard book={relatedBook} averageRating={getRelatedAvgRating(relatedBook.id)} />
-                </div>
+                  <div className="flex items-center space-x-3">
+                    <ShoppingCart size={18} className="text-gray-400 group-hover:text-brand-600" />
+                    <span className="font-medium text-gray-700">{option.vendor}</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="font-bold text-gray-900">${option.price.toFixed(2)}</span>
+                    {option.inStock ? (
+                      <span className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">In Stock</span>
+                    ) : (
+                      <span className="text-xs text-red-600 bg-red-50 px-2 py-1 rounded-full">OOS</span>
+                    )}
+                    <ExternalLink size={14} className="text-gray-400" />
+                  </div>
+                </a>
               ))}
             </div>
-          ) : (
-            <p className="text-gray-500 italic">No similar books found in the library yet.</p>
-          )}
+          </div>
         </div>
 
-        {/* Reviews Section */}
-        <div className="border-t border-gray-200 pt-10">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-serif font-bold text-gray-900">Community Reviews</h2>
-            <button
-              onClick={() => setShowReviewForm(!showReviewForm)}
-              className="text-brand-600 hover:text-brand-800 font-medium text-sm underline underline-offset-4"
-            >
-              {showReviewForm ? 'Cancel Review' : 'Write a Review'}
-            </button>
+        {/* Right Column: Details & Reviews */}
+        <div className="lg:col-span-8 space-y-10">
+          <div>
+            <div className="flex flex-wrap gap-2 mb-4">
+              {book.genres.map(g => (
+                <span key={g} className="px-3 py-1 rounded-full bg-gray-100 text-gray-600 text-xs font-semibold uppercase tracking-wider">{g}</span>
+              ))}
+            </div>
+            <h1 className="text-4xl sm:text-5xl font-serif font-black text-gray-900 mb-2">{book.title}</h1>
+            <p className="text-xl text-gray-600 mb-2">by <span className="text-brand-700 font-medium">{book.author}</span> ({book.publishedYear})</p>
+            {book.publisher && (
+              <p className="flex items-center text-sm text-gray-500 mb-6">
+                <Building2 size={14} className="mr-1.5" />
+                Published by <span className="text-gray-700 font-medium ml-1">{book.publisher}</span>
+              </p>
+            )}
+
+            <div className="flex items-center space-x-4 mb-8">
+              <div className="flex items-center space-x-2">
+                <StarRating rating={averageRating} size={24} />
+                <span className="text-2xl font-bold text-gray-900">{averageRating.toFixed(1)}</span>
+              </div>
+              <span className="text-gray-400">|</span>
+              <span className="text-gray-600">{reviews.length} Reviews</span>
+            </div>
+
+            <p className="text-lg text-gray-700 leading-relaxed max-w-3xl mb-8">
+              {book.description}
+            </p>
+
+            {/* AI Integration Section - Collapsible */}
+            <div className="border border-brand-200 rounded-2xl overflow-hidden bg-white shadow-sm mb-8">
+              <button
+                onClick={() => setIsAiSectionOpen(!isAiSectionOpen)}
+                className="w-full flex items-center justify-between p-5 bg-gradient-to-r from-brand-50/50 to-white hover:bg-brand-50 transition-colors"
+              >
+                <div className="flex items-center space-x-2 text-brand-800">
+                  <Sparkles size={20} className="text-brand-600" />
+                  <h3 className="font-serif font-bold text-lg sm:text-xl">Gemini AI Insights</h3>
+                </div>
+                {isAiSectionOpen ? <ChevronUp size={20} className="text-gray-500" /> : <ChevronDown size={20} className="text-gray-500" />}
+              </button>
+
+              {isAiSectionOpen && (
+                <div className="p-6 sm:p-8 bg-white border-t border-brand-100 animate-fade-in">
+                  {!aiInsight && !loadingAi && (
+                    <div className="flex flex-col items-center justify-center py-4 text-center space-y-4">
+                      <div className="bg-brand-100 p-3 rounded-full text-brand-600 mb-2">
+                        <Sparkles size={24} />
+                      </div>
+                      <div>
+                        <p className="text-gray-900 font-medium mb-1">Unlock deeper insights</p>
+                        <p className="text-gray-500 text-sm max-w-md mx-auto">
+                          Get a comprehensive summary, key themes, and personalized recommendations powered by Gemini AI.
+                        </p>
+                      </div>
+                      <button
+                        onClick={handleGenerateInsight}
+                        className="px-5 py-2.5 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors shadow-sm text-sm font-medium flex items-center space-x-2"
+                      >
+                        <Sparkles size={16} />
+                        <span>Generate Analysis</span>
+                      </button>
+                    </div>
+                  )}
+
+                  {loadingAi && (
+                    <div className="space-y-4 animate-pulse py-2">
+                      <div className="flex items-center space-x-2 text-brand-600 text-sm font-medium mb-4">
+                        <Sparkles size={16} className="animate-spin" />
+                        <span>Analyzing "{book.title}"...</span>
+                      </div>
+                      <div className="h-4 bg-gray-100 rounded w-3/4"></div>
+                      <div className="h-4 bg-gray-100 rounded w-full"></div>
+                      <div className="h-4 bg-gray-100 rounded w-5/6"></div>
+                      <div className="h-4 bg-gray-100 rounded w-2/3"></div>
+                    </div>
+                  )}
+
+                  {aiInsight && (
+                    <div className="prose prose-sm sm:prose-base prose-brand max-w-none text-gray-700">
+                      <ReactMarkdown>{aiInsight}</ReactMarkdown>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
 
-          {showReviewForm && (
-            <form onSubmit={handleSubmitReview} className="bg-gray-50 p-6 rounded-xl mb-8 animate-fade-in">
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Your Rating</label>
-                <StarRating
-                  rating={newReviewRating}
-                  interactive
-                  onRate={setNewReviewRating}
-                  size={24}
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Your Review</label>
-                <textarea
-                  required
-                  rows={4}
-                  className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all"
-                  placeholder="What did you think about this book?"
-                  value={newReviewContent}
-                  onChange={(e) => setNewReviewContent(e.target.value)}
-                />
-              </div>
-              <button
-                type="submit"
-                disabled={newReviewRating === 0}
-                className="bg-gray-900 text-white px-6 py-2 rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-              >
-                Post Review
-              </button>
-            </form>
-          )}
-
-          <div className="space-y-8">
-            {reviews.map((review) => (
-              <div key={review.id} className="flex space-x-4">
-                <div className="flex-shrink-0">
-                  <div className="w-10 h-10 rounded-full bg-brand-100 flex items-center justify-center text-brand-700 font-bold">
-                    {review.userName.charAt(0)}
+          {/* Related Books Section */}
+          <div className="border-t border-gray-200 pt-10 pb-8">
+            <div className="flex items-center mb-6">
+              <Layers size={20} className="mr-2 text-brand-600" />
+              <h2 className="text-2xl font-serif font-bold text-gray-900">Related Books</h2>
+            </div>
+            {relatedBooks.length > 0 ? (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {relatedBooks.map((relatedBook, idx) => (
+                  <div
+                    key={relatedBook.id}
+                    className="animate-fade-in"
+                    style={{ animationDelay: `${idx * 100}ms` }}
+                  >
+                    <BookCard book={relatedBook} averageRating={getRelatedAvgRating(relatedBook.id)} />
                   </div>
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center justify-between mb-1">
-                    <h4 className="font-bold text-gray-900">{review.userName}</h4>
-                    <span className="text-xs text-gray-500">{review.date}</span>
-                  </div>
-                  <div className="mb-2">
-                    <StarRating rating={review.rating} size={14} />
-                  </div>
-                  <p className="text-gray-700 leading-relaxed text-sm sm:text-base">{review.content}</p>
-                </div>
+                ))}
               </div>
-            ))}
-            {reviews.length === 0 && (
-              <p className="text-gray-500 italic">No reviews yet. Be the first to share your thoughts!</p>
+            ) : (
+              <p className="text-gray-500 italic">No similar books found in the library yet.</p>
             )}
+          </div>
+
+          {/* Reviews Section */}
+          <div className="border-t border-gray-200 pt-10">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-2xl font-serif font-bold text-gray-900">Community Reviews</h2>
+              {user && (
+                <button
+                  onClick={() => setShowReviewForm(!showReviewForm)}
+                  className="text-brand-600 hover:text-brand-800 font-medium text-sm underline underline-offset-4"
+                >
+                  {showReviewForm ? 'Cancel Review' : 'Write a Review'}
+                </button>
+              )}
+            </div>
+
+            {showReviewForm && user && (
+              <form onSubmit={handleSubmitReview} className="bg-gray-50 p-6 rounded-xl mb-8 animate-fade-in">
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Your Rating</label>
+                  <StarRating
+                    rating={newReviewRating}
+                    interactive
+                    onRate={setNewReviewRating}
+                    size={24}
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Your Review</label>
+                  <textarea
+                    required
+                    rows={4}
+                    className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all"
+                    placeholder="What did you think about this book?"
+                    value={newReviewContent}
+                    onChange={(e) => setNewReviewContent(e.target.value)}
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={newReviewRating === 0}
+                  className="bg-gray-900 text-white px-6 py-2 rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                  Post Review
+                </button>
+              </form>
+            )}
+
+            <div className="space-y-8">
+              {reviews.map((review) => (
+                <div key={review.id} className="flex space-x-4">
+                  <div className="flex-shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-brand-100 flex items-center justify-center text-brand-700 font-bold">
+                      {review.userName.charAt(0)}
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between mb-1">
+                      <h4 className="font-bold text-gray-900">{review.userName}</h4>
+                      <span className="text-xs text-gray-500">{review.date}</span>
+                    </div>
+                    <div className="mb-2">
+                      <StarRating rating={review.rating} size={14} />
+                    </div>
+                    <p className="text-gray-700 leading-relaxed text-sm sm:text-base">{review.content}</p>
+                  </div>
+                </div>
+              ))}
+              {reviews.length === 0 && (
+                <p className="text-gray-500 italic">No reviews yet. Be the first to share your thoughts!</p>
+              )}
+            </div>
           </div>
         </div>
       </div>
     </div>
-    </div >
   );
 };
 
