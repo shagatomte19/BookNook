@@ -5,7 +5,7 @@ A modern API backend for the BookNook book lovers' social platform.
 """
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
+import os
 from app.config import get_settings
 from app.database import init_db
 from app.routers import auth, users, books, authors, reviews, posts, groups, messages, admin
@@ -24,7 +24,11 @@ app = FastAPI(
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS,
+    allow_origins=[
+        "http://localhost:3000",
+        "https://book-nook-deploy.vercel.app",  # Your Vercel URL
+        os.getenv("FRONTEND_URL", ""),
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
