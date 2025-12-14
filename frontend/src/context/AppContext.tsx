@@ -23,6 +23,7 @@ interface AppContextType {
   groupPosts: GroupPost[];
   messages: DirectMessage[];
   isLoading: boolean;
+  isAuthLoading: boolean;
   theme: Theme;
   addReview: (review: Review) => void;
   getBookReviews: (bookId: string) => Review[];
@@ -82,6 +83,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [groupPosts, setGroupPosts] = useState<GroupPost[]>([]);
   const [messages, setMessages] = useState<DirectMessage[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [theme, setThemeState] = useState<Theme>('light');
 
   // Check for saved user session and theme on mount
@@ -100,6 +102,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   // Check for stored tokens logic
   useEffect(() => {
+    // Immediate session check
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session?.user) setIsAuthLoading(false);
+    });
+
     // Supabase Auth State Listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (session?.user) {
@@ -132,6 +139,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         setUser(null);
         removeToken();
       }
+      setIsAuthLoading(false);
     });
 
     // Check for Admin Token separately (keep existing logic or migrate? Keeping simple for now)
@@ -539,7 +547,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   return (
     <AppContext.Provider value={{
-      books, reviews, user, authors, posts, publishers, groups, groupPosts, allUsers, messages, isLoading, theme,
+      books, reviews, user, authors, posts, publishers, groups, groupPosts, allUsers, messages, isLoading, isAuthLoading, theme,
       addReview, getBookReviews, getUserReviews, getPost, getUserById, getUserByName,
       addBook, updateBook, deleteBook, addPost, toggleAdmin,
       createGroup, joinGroup, acceptMember, rejectMember, addGroupPost,
