@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Book, Review, User, Author, Post, Publisher, Group, GroupPost, Theme, DirectMessage } from '../types';
 import api, { authApi, usersApi, booksApi, authorsApi, reviewsApi, postsApi, groupsApi, messagesApi, adminApi, getToken, setToken, removeToken, getAdminToken, setAdminToken, removeAdminToken, adminAuthApi } from '../services/api';
-import { supabase } from '../services/supabase';
+import { supabase, supabaseAuth } from '../services/supabase';
 import { INITIAL_REVIEWS, CURRENT_USER } from '../constants';
 
 // Initial empty states
@@ -61,6 +61,7 @@ interface AppContextType {
 
   // Theme functions
   setTheme: (theme: Theme) => void;
+  setUser: (user: User | null) => void;
 
   // Admin Auth
   adminUser: User | null;
@@ -323,13 +324,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const socialLogin = async (provider: 'google') => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: provider,
-      options: {
-        redirectTo: window.location.origin,
-      },
-    });
-    if (error) console.error('Social login error:', error.message);
+    if (provider === 'google') {
+      const { error } = await supabaseAuth.signInWithGoogle();
+      if (error) console.error('Social login error:', error.message);
+    }
   };
 
   const resetPassword = async (email: string): Promise<boolean> => {
@@ -555,7 +553,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       login, register, socialLogin, resetPassword, logout, setTheme,
 
       // Admin
-      adminUser, adminLogin, adminLogout
+      adminUser, adminLogin, adminLogout,
+      setUser
     }}>
       {children}
     </AppContext.Provider>

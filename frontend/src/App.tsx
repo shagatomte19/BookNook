@@ -23,6 +23,7 @@ import Recommendations from './pages/Recommendations';
 import Login from './pages/Login';
 import AdminLogin from './pages/admin/AdminLogin';
 import Register from './pages/Register';
+import AuthCallback from './pages/AuthCallback';
 import ChatBot from './components/ChatBot';
 
 const ProtectedRoute: React.FC<{ children: React.ReactElement }> = ({ children }) => {
@@ -58,6 +59,7 @@ const App: React.FC = () => {
               {/* Public/Auth Routes */}
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/auth/callback" element={<AuthCallback />} />
 
               {/* Protected Content Routes */}
               <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />

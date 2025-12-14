@@ -12,3 +12,35 @@ export const supabase = createClient(
     supabaseUrl || '',
     supabaseAnonKey || ''
 );
+
+const getRedirectUrl = () => {
+    if (window.location.hostname !== 'localhost') {
+        return `${window.location.origin}/auth/callback`;
+    }
+    return 'http://localhost:3000/auth/callback';
+};
+
+export const supabaseAuth = {
+    signInWithGoogle: async () => {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: getRedirectUrl(),
+                queryParams: {
+                    access_type: 'offline',
+                    prompt: 'consent',
+                },
+            },
+        });
+        return { data, error };
+    },
+    signInWithFacebook: async () => {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+            provider: 'facebook',
+            options: {
+                redirectTo: getRedirectUrl(),
+            },
+        });
+        return { data, error };
+    },
+};
