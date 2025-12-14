@@ -25,6 +25,7 @@ import AdminLogin from './pages/admin/AdminLogin';
 import Register from './pages/Register';
 import AuthCallback from './pages/AuthCallback';
 import ChatBot from './components/ChatBot';
+import HashRedirectHandler from './components/HashRedirectHandler';
 
 const ProtectedRoute: React.FC<{ children: React.ReactElement }> = ({ children }) => {
   const { user, isAuthLoading } = useApp();
@@ -54,6 +55,7 @@ const App: React.FC = () => {
       <BrowserRouter>
         <div className="flex flex-col min-h-screen text-gray-800 font-sans relative">
           <Navbar />
+          <HashRedirectHandler />
           <main className="flex-grow">
             <Routes>
               {/* Public/Auth Routes */}
