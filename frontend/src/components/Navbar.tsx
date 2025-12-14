@@ -60,6 +60,14 @@ const Navbar: React.FC = () => {
                   Groups
                 </Link>
 
+                <Link to="/recommendations" className="text-gray-500 hover:text-gray-900 font-sans text-sm font-medium transition-colors flex items-center gap-1">
+                  <Sparkles size={14} className="text-brand-500" /> AI Picks
+                </Link>
+
+                <button onClick={cycleTheme} className="text-gray-400 hover:text-gray-900 transition-colors">
+                  <ThemeIcon />
+                </button>
+
                 <div className="h-4 w-px bg-gray-200"></div>
 
                 <div className="flex items-center gap-4">

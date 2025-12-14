@@ -130,11 +130,25 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
         // Also try to get backend profile if it exists to overwrite with richer data
         try {
-          // We might need to ensure backend user exists here or just rely on shared ID
-          // const backendUser = await authApi.getMe();
-          // setUser({ ...mappedUser, ...backendUser }); 
+          const backendUser = await authApi.getMe();
+          if (backendUser) {
+            const mergedUser: User = {
+              ...mappedUser,
+              ...backendUser,
+              // Ensure these fields from backend take precedence
+              profileCompleted: backendUser.profile_completed || backendUser.profileCompleted || false,
+              isAdmin: backendUser.is_admin || backendUser.isAdmin || false,
+              avatarUrl: backendUser.avatar_url || mappedUser.avatarUrl,
+              joinedDate: backendUser.joined_date || mappedUser.joinedDate
+            };
+            setUser(mergedUser);
+            localStorage.setItem('booknook_user', JSON.stringify(mergedUser));
+            console.log('✅ Backend profile synced:', mergedUser);
+          }
         } catch (e) {
-          console.log('Backend sync optional', e);
+          console.log('Backend sync failed, using session data only:', e);
+          // If 404/401, likely user doesn't exist yet or token invalid, 
+          // but logging prevents silent failures.
         }
 
       } else {
