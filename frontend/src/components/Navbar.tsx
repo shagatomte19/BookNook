@@ -38,91 +38,52 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-brand-100 shadow-sm transition-colors duration-300">
+    <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           <Link to="/" className="flex items-center space-x-2 group">
-            <div className="bg-brand-600 text-white p-2 rounded-xl group-hover:bg-brand-700 transition-colors shadow-sm">
-              <BookOpen size={24} />
-            </div>
-            <span className="font-serif text-xl font-bold text-gray-900 tracking-tight">BookNook</span>
+            <span className="font-serif text-2xl font-bold text-gray-900 tracking-tight">BookNook</span>
           </Link>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
             {user ? (
-              <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-4 overflow-x-auto no-scrollbar">
-                <Link to="/" className={linkClass('/')}>
-                  <Home size={18} />
-                  <span className="hidden lg:inline">Feed</span>
+              <div className="flex items-center space-x-6">
+                <Link to="/" className="text-gray-500 hover:text-gray-900 font-sans text-sm font-medium transition-colors">
+                  Feed
                 </Link>
 
-                <Link to="/search" className={linkClass('/search')}>
-                  <Compass size={18} />
-                  <span className="hidden lg:inline">Explore</span>
+                <Link to="/search" className="text-gray-500 hover:text-gray-900 font-sans text-sm font-medium transition-colors">
+                  Explore
                 </Link>
 
-                <Link to="/messages" className={`${linkClass('/messages')} relative`}>
-                  <Mail size={18} />
-                  <span className="hidden lg:inline">Messages</span>
-                  {unreadCount > 0 && (
-                    <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border border-white"></span>
-                  )}
+                <Link to="/groups" className="text-gray-500 hover:text-gray-900 font-sans text-sm font-medium transition-colors">
+                  Groups
                 </Link>
 
-                <Link to="/recommendations" className={linkClass('/recommendations')}>
-                  <Sparkles size={18} className={isActive('/recommendations') ? 'text-brand-600 fill-brand-100' : ''} />
-                  <span className="hidden lg:inline">AI Picks</span>
-                </Link>
+                <div className="h-4 w-px bg-gray-200"></div>
 
-                <Link to="/groups" className={linkClass('/groups')}>
-                  <MessageCircle size={18} />
-                  <span className="hidden lg:inline">Groups</span>
-                </Link>
+                <div className="flex items-center gap-4">
+                  <Link to="/messages" className="text-gray-400 hover:text-gray-900 relative">
+                    <MessageCircle size={20} className="stroke-[1.5]" />
+                    {unreadCount > 0 && <span className="absolute -top-1 -right-1 w-2 h-2 bg-brand-600 rounded-full"></span>}
+                  </Link>
 
-                <Link to="/authors" className={linkClass('/authors')}>
-                  <Users size={18} />
-                  <span className="hidden lg:inline">Authors</span>
-                </Link>
-
-                <div className="h-6 w-px bg-gray-200 mx-2 hidden sm:block"></div>
-
-                <div className="flex items-center gap-2">
                   <Link
                     to="/profile"
-                    className={`flex items-center space-x-2 px-3 py-2 rounded-full text-sm font-medium transition-all ${isActive('/profile') ? 'ring-2 ring-brand-100' : 'hover:ring-2 hover:ring-gray-100'
-                      }`}
+                    className="flex items-center space-x-2 text-sm font-medium text-gray-700 hover:text-gray-900 group"
                   >
-                    <img
-                      src={user.avatarUrl}
-                      alt={user.name}
-                      className="h-8 w-8 rounded-full object-cover border border-gray-200"
-                    />
-                    <span className="hidden md:inline text-gray-700 max-w-[100px] truncate">{user.name.split(' ')[0]}</span>
+                    <div className="w-8 h-8 rounded-full bg-gray-100 overflow-hidden border border-gray-100 group-hover:border-gray-300 transition-colors">
+                      <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
+                    </div>
                   </Link>
-                  <button
-                    onClick={handleLogout}
-                    className="p-2 text-gray-400 hover:text-red-500 transition-colors"
-                    title="Logout"
-                  >
-                    <LogOut size={18} />
-                  </button>
                 </div>
               </div>
             ) : (
-              <div className="flex items-center space-x-4">
-                <Link to="/login" className="text-sm font-medium text-gray-600 hover:text-brand-700">Log In</Link>
-                <Link to="/register" className="px-4 py-2 bg-brand-600 text-white text-sm font-bold rounded-lg hover:bg-brand-700 shadow-sm transition-colors">Sign Up</Link>
+              <div className="flex items-center space-x-6">
+                <Link to="/login" className="text-sm font-medium text-gray-600 hover:text-gray-900">Sign In</Link>
+                <Link to="/register" className="px-5 py-2 bg-gray-900 text-white text-sm font-medium rounded-full hover:bg-gray-800 transition-colors">Get Started</Link>
               </div>
             )}
-
-            {/* Theme Toggle Button */}
-            <button
-              onClick={cycleTheme}
-              className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 transition-colors"
-              title={`Theme: ${theme}`}
-            >
-              <ThemeIcon />
-            </button>
           </div>
         </div>
       </div>

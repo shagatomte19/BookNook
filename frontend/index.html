@@ -6,64 +6,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BookNook</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <style>
       :root {
-        /* Default Light Theme (Warm Book/Ink Style) */
+        /* Minimal Clean Theme (Warm & Airy) */
         --bg-white: 255 255 255;
-        --text-gray-900: 28 25 23;    /* Warm Black (Stone-900) - Like printed ink */
-        --text-gray-500: 87 83 78;    /* Warm Gray (Stone-500) */
-        --gray-50: 250 250 249;       /* Stone-50 */
-        --gray-100: 245 245 244;      /* Stone-100 */
-        --gray-200: 231 229 228;      /* Stone-200 */
-
-        --brand-50: 255 252 250;
-        --brand-100: 242 232 229;
-        --brand-200: 234 221 215;
-        --brand-600: 138 106 92;
-        --brand-700: 114 85 72;
-        --brand-800: 93 69 59;
-        --brand-900: 78 58 50;
+        --text-gray-900: 23 23 23;    /* Neutral Black */
+        --text-gray-500: 115 115 115; /* Neutral Gray */
+        --gray-50: 250 250 250;       /* Very Light Gray */
+        --gray-100: 245 245 245;      
+        --gray-200: 229 229 229;      
+        
+        /* Brand Colors (Subtle Earthy/Terracotta) */
+        --brand-50: 255 252 251;
+        --brand-100: 254 242 238;
+        --brand-200: 252 228 220;
+        --brand-600: 196 112 85;      /* Terracotta like */
+        --brand-700: 154 78 55;
+        --brand-800: 124 58 42;
+        --brand-900: 99 44 32;
       }
 
       [data-theme='dark'] {
-        /* Dark Theme (Inverted High Contrast) */
-        --bg-white: 30 30 30;         /* Cards become dark gray */
-        --text-gray-900: 231 229 228; /* Off-white (Stone-200) */
-        --text-gray-500: 168 162 158; /* Light gray (Stone-400) */
-        --gray-50: 12 10 9;           /* Almost black (Stone-950) */
-        --gray-100: 28 25 23;         /* Stone-900 */
-        --gray-200: 68 64 60;         /* Stone-700 */
+        /* Dark Theme (Deep & Muted) */
+        --bg-white: 23 23 23;         
+        --text-gray-900: 250 250 250; 
+        --text-gray-500: 163 163 163; 
+        --gray-50: 10 10 10;           
+        --gray-100: 38 38 38;         
+        --gray-200: 64 64 64;         
 
-        --brand-50: 28 25 23;         
-        --brand-100: 41 37 36;
-        --brand-200: 68 64 60;
-        --brand-600: 161 128 114;     
-        --brand-700: 180 150 140;
-        --brand-800: 200 180 170;
-        --brand-900: 231 229 228;
+        --brand-50: 10 10 10;         
+        --brand-100: 23 23 23;
+        --brand-200: 38 38 38;
+        --brand-600: 196 112 85;     
+        --brand-700: 214 135 110;
+        --brand-800: 232 169 148;
+        --brand-900: 250 250 250;
       }
 
-      [data-theme='gray'] {
-        /* Gray Theme (Monochrome / Old School Paper) */
-        --bg-white: 255 255 255;
-        --text-gray-900: 0 0 0;       /* Pure Black */
-        --text-gray-500: 64 64 64;    /* Neutral Gray */
-        --gray-50: 245 245 245;
-        --gray-100: 229 229 229;
-        --gray-200: 163 163 163;
-
-        --brand-50: 250 250 250;      
-        --brand-100: 229 229 229;
-        --brand-200: 212 212 212;
-        --brand-600: 23 23 23;        /* Black */
-        --brand-700: 64 64 64;
-        --brand-800: 82 82 82;
-        --brand-900: 0 0 0;
-      }
+      /* No third motif needed for minimal. Simplify. */
 
       body {
-        background-color: rgb(var(--brand-50));
+        background-color: rgb(var(--bg-white));
         color: rgb(var(--text-gray-900));
         transition: background-color 0.3s ease, color 0.3s ease;
       }
@@ -74,8 +59,8 @@
         theme: {
           extend: {
             fontFamily: {
-              sans: ['"Courier Prime"', 'monospace'], // Old School Typewriter style for UI
-              serif: ['"Crimson Text"', 'serif'],     // Classic Book style for Headings
+              sans: ['"Inter"', 'sans-serif'],
+              serif: ['"Playfair Display"', 'serif'],
             },
             colors: {
               white: 'rgb(var(--bg-white) / <alpha-value>)',
@@ -83,7 +68,7 @@
                 50: 'rgb(var(--gray-50) / <alpha-value>)',
                 100: 'rgb(var(--gray-100) / <alpha-value>)',
                 200: 'rgb(var(--gray-200) / <alpha-value>)',
-                300: 'rgb(var(--gray-200) / <alpha-value>)',
+                300: 'rgb(var(--gray-200) / <alpha-value>)', // Alias
                 400: 'rgb(var(--text-gray-500) / <alpha-value>)',
                 500: 'rgb(var(--text-gray-500) / <alpha-value>)',
                 600: 'rgb(var(--text-gray-500) / <alpha-value>)',
@@ -95,9 +80,9 @@
                 50: 'rgb(var(--brand-50) / <alpha-value>)',
                 100: 'rgb(var(--brand-100) / <alpha-value>)',
                 200: 'rgb(var(--brand-200) / <alpha-value>)',
-                300: '#e0cec7', // Fallback/Unused
-                400: '#d2bab0', // Fallback/Unused
-                500: '#a18072', // Fallback/Unused
+                300: 'rgb(var(--brand-200) / <alpha-value>)', // Alias
+                400: 'rgb(var(--brand-600) / <alpha-value>)', // Alias
+                500: 'rgb(var(--brand-600) / <alpha-value>)', // Alias
                 600: 'rgb(var(--brand-600) / <alpha-value>)',
                 700: 'rgb(var(--brand-700) / <alpha-value>)',
                 800: 'rgb(var(--brand-800) / <alpha-value>)',

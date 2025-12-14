@@ -6,11 +6,15 @@ from typing import Optional
 from datetime import datetime
 
 
+
 class UserCreate(BaseModel):
     """Schema for user registration."""
     name: str = Field(..., min_length=1, max_length=255)
     email: EmailStr
     password: str = Field(..., min_length=6)
+    # Optional fields during registration if we wanted, but we keep them for onboarding
+    age: Optional[int] = None
+    nickname: Optional[str] = None
 
 
 class UserLogin(BaseModel):
@@ -26,6 +30,10 @@ class UserUpdate(BaseModel):
     avatar_url: Optional[str] = None
     is_admin: Optional[bool] = None
     is_active: Optional[bool] = None
+    # Profile Enhancements
+    age: Optional[int] = None
+    nickname: Optional[str] = None
+    profile_completed: Optional[bool] = None
 
 
 class UserResponse(BaseModel):
@@ -38,6 +46,12 @@ class UserResponse(BaseModel):
     is_admin: bool = False
     is_active: bool = True
     joined_date: Optional[str] = None
+    
+    # Profile Enhancements
+    age: Optional[int] = None
+    nickname: Optional[str] = None
+    profile_completed: bool = False
+
     following: list[str] = []
     followers: list[str] = []
     created_at: Optional[datetime] = None

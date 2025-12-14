@@ -12,6 +12,14 @@ from app.services.auth import get_current_user_required, get_current_user
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
+from app.utils.nickname_generator import generate_random_nickname
+
+@router.get("/generate_nickname", response_model=str)
+async def get_random_nickname(db: Session = Depends(get_db)):
+    """Generate a random unique nickname."""
+    # Simple retry logic to ensure uniqueness could be added here if critical
+    # For now just return a random one
+    return generate_random_nickname()
 
 @router.get("", response_model=List[UserResponse])
 async def get_all_users(

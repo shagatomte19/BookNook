@@ -122,6 +122,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           isAdmin: false,
           following: [],
           followers: [],
+          profileCompleted: false, // Will be updated by backend sync
           // Keep existing extra properties if we have them from backend in future
         };
         setUser(mappedUser);
@@ -239,7 +240,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           ...u,
           avatarUrl: u.avatar_url,
           isAdmin: u.is_admin,
-          joinedDate: u.joined_date
+          joinedDate: u.joined_date,
+          age: u.age,
+          nickname: u.nickname,
+          profileCompleted: u.profile_completed
         }));
 
         const mappedReviews: Review[] = reviewsData.map((r: any) => ({

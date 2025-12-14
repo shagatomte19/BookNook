@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import os
 from app.config import get_settings
 from app.database import init_db, SessionLocal
-from app.routers import auth, users, books, authors, reviews, posts, groups, messages, admin
+from app.routers import auth, users, books, authors, reviews, posts, groups, messages, admin, interactions, shelves
 
 settings = get_settings()
 
@@ -47,6 +47,8 @@ app.include_router(posts.router)
 app.include_router(groups.router)
 app.include_router(messages.router)
 app.include_router(admin.router)
+app.include_router(interactions.router)
+app.include_router(shelves.router)
 
 
 @app.on_event("startup")

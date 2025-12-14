@@ -46,6 +46,10 @@ export interface User {
   isAdmin?: boolean;
   following: string[]; // Array of User IDs
   followers: string[]; // Array of User IDs
+  // Profile Enhancements
+  age?: number;
+  nickname?: string;
+  profileCompleted?: boolean;
 }
 
 export interface DirectMessage {

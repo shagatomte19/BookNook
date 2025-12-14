@@ -1,7 +1,7 @@
 """
 User model for authentication and profiles.
 """
-from sqlalchemy import Column, String, Boolean, DateTime, Text, JSON
+from sqlalchemy import Column, String, Boolean, DateTime, Text, JSON, Integer
 from sqlalchemy.sql import func
 from app.database import Base
 
@@ -20,6 +20,11 @@ class User(Base):
     is_admin = Column(Boolean, default=False)
     is_active = Column(Boolean, default=True)
     joined_date = Column(String(50), nullable=True)
+    
+    # Profile Enhancements
+    age = Column(Integer, nullable=True)
+    nickname = Column(String(100), nullable=True)
+    profile_completed = Column(Boolean, default=False)
     
     # Social features stored as JSON arrays of user IDs
     following = Column(JSON, default=list)

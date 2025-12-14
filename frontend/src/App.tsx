@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AppProvider, useApp } from './context/AppContext';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
@@ -27,14 +27,28 @@ import AuthCallback from './pages/AuthCallback';
 import ChatBot from './components/ChatBot';
 import HashRedirectHandler from './components/HashRedirectHandler';
 
+import Onboarding from './pages/Onboarding';
+
 const ProtectedRoute: React.FC<{ children: React.ReactElement }> = ({ children }) => {
   const { user, isAuthLoading } = useApp();
+  const location = useLocation();
 
   if (isAuthLoading) return <div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-4 border-brand-600 border-t-transparent rounded-full animate-spin"></div></div>;
 
   if (!user) {
     return <Navigate to="/login" replace />;
   }
+
+  // redirect to onboarding if profile incomplete
+  if (!user.profileCompleted && location.pathname !== '/onboarding') {
+    return <Navigate to="/onboarding" replace />;
+  }
+
+  // redirect to home if profile complete and trying to access onboarding
+  if (user.profileCompleted && location.pathname === '/onboarding') {
+    return <Navigate to="/" replace />;
+  }
+
   return children;
 };
 
@@ -62,6 +76,7 @@ const App: React.FC = () => {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
+              <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
 
               {/* Protected Content Routes */}
               <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />

@@ -56,6 +56,10 @@ export interface User {
   following: string[];
   followers: string[];
   created_at?: string;
+  // Profile Enhancements
+  age?: number;
+  nickname?: string;
+  profile_completed?: boolean;
 }
 
 export interface Review {
@@ -314,6 +318,8 @@ export const usersApi = {
 
   unfollow: (userId: string) =>
     apiRequest<User>(`/users/${userId}/unfollow`, { method: 'POST' }),
+
+  generateNickname: () => apiRequest<string>('/users/generate_nickname'),
 };
 
 // ============================================
@@ -550,6 +556,90 @@ export const adminApi = {
   },
 };
 
+// ============================================
+// Interactions API
+// ============================================
+
+export interface Comment {
+  id: string;
+  post_id: string;
+  user_id: string;
+  content: string;
+  created_at: string;
+  updated_at?: string;
+  user_name?: string;
+  user_avatar?: string;
+}
+
+export interface LikeResponse {
+  id: string;
+  user_id: string;
+  post_id: string;
+  created_at: string;
+}
+
+export const interactionsApi = {
+  getComments: (postId: string) =>
+    apiRequest<Comment[]>(`/posts/${postId}/comments`),
+
+  createComment: (postId: string, content: string) =>
+    apiRequest<Comment>(`/posts/${postId}/comments`, {
+      method: 'POST',
+      body: JSON.stringify({ post_id: postId, content })
+    }),
+
+  deleteComment: (commentId: string) =>
+    apiRequest<{ message: string }>(`/posts/comments/${commentId}`, { method: 'DELETE' }),
+
+  toggleLike: (postId: string) =>
+    apiRequest<LikeResponse>(`/posts/${postId}/like`, { method: 'POST' }),
+
+  getLikes: (postId: string) =>
+    apiRequest<LikeResponse[]>(`/posts/${postId}/likes`),
+};
+
+// ============================================
+// Shelves API
+// ============================================
+
+export interface ShelfItem {
+  id: string;
+  shelf_id: string;
+  book_id: string;
+  added_at: string;
+  book?: Book;
+}
+
+export interface Shelf {
+  id: string;
+  user_id: string;
+  name: string;
+  type: 'want_to_read' | 'currently_reading' | 'read' | 'custom';
+  is_public: boolean;
+  items: ShelfItem[];
+  created_at: string;
+}
+
+export const shelvesApi = {
+  getUserShelves: (userId: string) =>
+    apiRequest<Shelf[]>(`/shelves/user/${userId}`),
+
+  createShelf: (data: { name: string; is_public?: boolean }) =>
+    apiRequest<Shelf>('/shelves', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+
+  addBook: (shelfId: string, bookId: string) =>
+    apiRequest<ShelfItem>(`/shelves/${shelfId}/books`, {
+      method: 'POST',
+      body: JSON.stringify({ shelf_id: shelfId, book_id: bookId })
+    }),
+
+  removeBook: (shelfId: string, bookId: string) =>
+    apiRequest<{ message: string }>(`/shelves/${shelfId}/books/${bookId}`, { method: 'DELETE' }),
+};
+
 // Default export with all APIs
 export default {
   auth: authApi,
@@ -561,4 +651,6 @@ export default {
   groups: groupsApi,
   messages: messagesApi,
   admin: adminApi,
+  interactions: interactionsApi,
+  shelves: shelvesApi,
 };

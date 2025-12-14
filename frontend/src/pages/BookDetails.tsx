@@ -8,14 +8,15 @@ import BookCard from '../components/BookCard';
 import { ShoppingCart, Star, ExternalLink, Sparkles, ChevronLeft, ChevronDown, ChevronUp, User as UserIcon, Building2, Layers } from 'lucide-react';
 import { Review } from '../types';
 import ReactMarkdown from 'react-markdown';
+import { shelvesApi, Shelf } from '../services/api';
 
 const BookDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { books, getBookReviews, addReview, user, isLoading } = useApp();
-  
+
   const book = books.find(b => b.id === id);
   const reviews = book ? getBookReviews(book.id) : [];
-  
+
   const [aiInsight, setAiInsight] = useState<string | null>(null);
   const [loadingAi, setLoadingAi] = useState(false);
   const [newReviewRating, setNewReviewRating] = useState(0);
@@ -23,13 +24,37 @@ const BookDetails: React.FC = () => {
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [isAiSectionOpen, setIsAiSectionOpen] = useState(false);
 
+  const [myShelves, setMyShelves] = useState<Shelf[]>([]);
+  const [shelfMessage, setShelfMessage] = useState<string | null>(null);
+
   // Scroll to top on mount and when id changes
   useEffect(() => {
     window.scrollTo(0, 0);
     // Reset AI state when moving to a new book
     setAiInsight(null);
     setIsAiSectionOpen(false);
-  }, [id]);
+    setShelfMessage(null);
+
+    if (user) {
+      shelvesApi.getUserShelves(user.id).then(setMyShelves).catch(console.error);
+    }
+  }, [id, user]);
+
+  const handleAddToShelf = async (shelfId: string) => {
+    if (!book) return;
+    try {
+      await shelvesApi.addBook(shelfId, book.id);
+      setShelfMessage("Added to shelf!");
+      // Refresh shelves to seeing updated state
+      if (user) {
+        shelvesApi.getUserShelves(user.id).then(setMyShelves);
+      }
+      setTimeout(() => setShelfMessage(null), 3000);
+    } catch (e) {
+      console.error(e);
+      setShelfMessage("Failed to add");
+    }
+  };
 
   if (isLoading) {
     return (
@@ -48,9 +73,9 @@ const BookDetails: React.FC = () => {
 
   // Calculate Related Books
   // Criteria: Same Genre OR Same Author, filtering out the current book
-  const relatedBooks = books.filter(b => 
+  const relatedBooks = books.filter(b =>
     b.id !== book.id && (
-      b.author === book.author || 
+      b.author === book.author ||
       b.genres.some(g => book.genres.includes(g))
     )
   ).slice(0, 4);
@@ -58,7 +83,7 @@ const BookDetails: React.FC = () => {
   const averageRating = reviews.length > 0
     ? reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length
     : 0;
-  
+
   // Helper for related cards
   const getRelatedAvgRating = (bookId: string) => {
     const r = getBookReviews(bookId);
@@ -108,12 +133,47 @@ const BookDetails: React.FC = () => {
           <div className="w-full max-w-sm rounded-lg shadow-2xl overflow-hidden bg-gray-100 transform hover:scale-[1.02] transition-transform duration-500">
             <img src={book.coverUrl} alt={book.title} className="w-full h-auto object-cover" />
           </div>
-          
+
+          {/* Shelf Actions */}
+          <div className="w-full max-w-sm">
+            <div className="relative group">
+              <button className="w-full bg-brand-600 text-white font-bold py-3 px-4 rounded-xl shadow-sm hover:bg-brand-700 transition-colors flex items-center justify-center gap-2">
+                <Layers size={18} />
+                <span>Add to Shelf</span>
+                <ChevronDown size={16} />
+              </button>
+              {user && myShelves.length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-20 hidden group-hover:block hover:block">
+                  {myShelves.map(shelf => (
+                    <button
+                      key={shelf.id}
+                      onClick={() => handleAddToShelf(shelf.id)}
+                      className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-brand-50 hover:text-brand-700 transition-colors border-b border-gray-50 last:border-0 capitalize flex justify-between items-center"
+                    >
+                      <span>{shelf.name.replace(/_/g, ' ')}</span>
+                      {shelf.items.some(i => i.book_id === book.id) && <span className="text-xs text-brand-600 font-bold">✓</span>}
+                    </button>
+                  ))}
+                </div>
+              )}
+              {!user && (
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white p-3 rounded-xl shadow-xl border border-gray-100 z-20 hidden group-hover:block text-center text-sm text-gray-500">
+                  Log in to manage shelves
+                </div>
+              )}
+            </div>
+            {shelfMessage && (
+              <div className="mt-2 text-center text-sm text-brand-600 font-medium animate-fade-in">
+                {shelfMessage}
+              </div>
+            )}
+          </div>
+
           <div className="w-full max-w-sm space-y-4">
             <h3 className="text-lg font-serif font-bold text-gray-900 border-b border-gray-100 pb-2">Best Prices</h3>
             <div className="space-y-3">
               {book.priceOptions.map((option, idx) => (
-                <a 
+                <a
                   key={idx}
                   href={option.url}
                   className="flex items-center justify-between p-4 rounded-xl border border-gray-200 hover:border-brand-500 hover:shadow-md hover:bg-brand-50/30 transition-all group"
@@ -123,13 +183,13 @@ const BookDetails: React.FC = () => {
                     <span className="font-medium text-gray-700">{option.vendor}</span>
                   </div>
                   <div className="flex items-center space-x-2">
-                     <span className="font-bold text-gray-900">${option.price.toFixed(2)}</span>
-                     {option.inStock ? (
-                       <span className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">In Stock</span>
-                     ) : (
-                       <span className="text-xs text-red-600 bg-red-50 px-2 py-1 rounded-full">OOS</span>
-                     )}
-                     <ExternalLink size={14} className="text-gray-400" />
+                    <span className="font-bold text-gray-900">${option.price.toFixed(2)}</span>
+                    {option.inStock ? (
+                      <span className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">In Stock</span>
+                    ) : (
+                      <span className="text-xs text-red-600 bg-red-50 px-2 py-1 rounded-full">OOS</span>
+                    )}
+                    <ExternalLink size={14} className="text-gray-400" />
                   </div>
                 </a>
               ))}
@@ -153,7 +213,7 @@ const BookDetails: React.FC = () => {
                 Published by <span className="text-gray-700 font-medium ml-1">{book.publisher}</span>
               </p>
             )}
-            
+
             <div className="flex items-center space-x-4 mb-8">
               <div className="flex items-center space-x-2">
                 <StarRating rating={averageRating} size={24} />
@@ -169,7 +229,7 @@ const BookDetails: React.FC = () => {
 
             {/* AI Integration Section - Collapsible */}
             <div className="border border-brand-200 rounded-2xl overflow-hidden bg-white shadow-sm mb-8">
-              <button 
+              <button
                 onClick={() => setIsAiSectionOpen(!isAiSectionOpen)}
                 className="w-full flex items-center justify-between p-5 bg-gradient-to-r from-brand-50/50 to-white hover:bg-brand-50 transition-colors"
               >
@@ -193,7 +253,7 @@ const BookDetails: React.FC = () => {
                           Get a comprehensive summary, key themes, and personalized recommendations powered by Gemini AI.
                         </p>
                       </div>
-                      <button 
+                      <button
                         onClick={handleGenerateInsight}
                         className="px-5 py-2.5 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors shadow-sm text-sm font-medium flex items-center space-x-2"
                       >
@@ -228,32 +288,32 @@ const BookDetails: React.FC = () => {
 
           {/* Related Books Section */}
           <div className="border-t border-gray-200 pt-10 pb-8">
-             <div className="flex items-center mb-6">
-                <Layers size={20} className="mr-2 text-brand-600" />
-                <h2 className="text-2xl font-serif font-bold text-gray-900">Related Books</h2>
-             </div>
-             {relatedBooks.length > 0 ? (
-               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {relatedBooks.map((relatedBook, idx) => (
-                    <div 
-                      key={relatedBook.id}
-                      className="animate-fade-in"
-                      style={{ animationDelay: `${idx * 100}ms` }}
-                    >
-                      <BookCard book={relatedBook} averageRating={getRelatedAvgRating(relatedBook.id)} />
-                    </div>
-                  ))}
-               </div>
-             ) : (
-               <p className="text-gray-500 italic">No similar books found in the library yet.</p>
-             )}
+            <div className="flex items-center mb-6">
+              <Layers size={20} className="mr-2 text-brand-600" />
+              <h2 className="text-2xl font-serif font-bold text-gray-900">Related Books</h2>
+            </div>
+            {relatedBooks.length > 0 ? (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {relatedBooks.map((relatedBook, idx) => (
+                  <div
+                    key={relatedBook.id}
+                    className="animate-fade-in"
+                    style={{ animationDelay: `${idx * 100}ms` }}
+                  >
+                    <BookCard book={relatedBook} averageRating={getRelatedAvgRating(relatedBook.id)} />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-500 italic">No similar books found in the library yet.</p>
+            )}
           </div>
 
           {/* Reviews Section */}
           <div className="border-t border-gray-200 pt-10">
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-2xl font-serif font-bold text-gray-900">Community Reviews</h2>
-              <button 
+              <button
                 onClick={() => setShowReviewForm(!showReviewForm)}
                 className="text-brand-600 hover:text-brand-800 font-medium text-sm underline underline-offset-4"
               >
@@ -265,10 +325,10 @@ const BookDetails: React.FC = () => {
               <form onSubmit={handleSubmitReview} className="bg-gray-50 p-6 rounded-xl mb-8 animate-fade-in">
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700 mb-2">Your Rating</label>
-                  <StarRating 
-                    rating={newReviewRating} 
-                    interactive 
-                    onRate={setNewReviewRating} 
+                  <StarRating
+                    rating={newReviewRating}
+                    interactive
+                    onRate={setNewReviewRating}
                     size={24}
                   />
                 </div>
@@ -283,8 +343,8 @@ const BookDetails: React.FC = () => {
                     onChange={(e) => setNewReviewContent(e.target.value)}
                   />
                 </div>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   disabled={newReviewRating === 0}
                   className="bg-gray-900 text-white px-6 py-2 rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
@@ -307,7 +367,7 @@ const BookDetails: React.FC = () => {
                       <span className="text-xs text-gray-500">{review.date}</span>
                     </div>
                     <div className="mb-2">
-                       <StarRating rating={review.rating} size={14} />
+                      <StarRating rating={review.rating} size={14} />
                     </div>
                     <p className="text-gray-700 leading-relaxed text-sm sm:text-base">{review.content}</p>
                   </div>
