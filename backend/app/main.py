@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import os
 from app.config import get_settings
-from app.database import init_db
+from app.database import init_db, SessionLocal
 from app.routers import auth, users, books, authors, reviews, posts, groups, messages, admin
 
 settings = get_settings()
@@ -20,14 +20,17 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc",
 )
+
 FRONTEND_URL = os.getenv("FRONTEND_URL", "")
+
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
+        "http://localhost:5173",  # Vite dev server
         "https://book-nook-deploy.vercel.app",  # Your Vercel URL
-        os.getenv("FRONTEND_URL", ""),
+        FRONTEND_URL,
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -52,7 +55,6 @@ async def startup_event():
     init_db()
     
     # Create default admin user if not exists
-    from app.database import SessionLocal
     from app.models.user import User
     from app.services.auth import get_password_hash
     from datetime import datetime
@@ -77,6 +79,22 @@ async def startup_event():
             db.add(admin_user)
             db.commit()
             print(f"✅ Default admin user created: {settings.DEFAULT_ADMIN_EMAIL}")
+        
+        # Auto-seed database if empty (only in production on Render)
+        if os.getenv("RENDER"):  # Render sets this environment variable
+            from app.models.book import Book
+            
+            book_count = db.query(Book).count()
+            
+            if book_count == 0:
+                print("🌱 Database is empty, auto-seeding...")
+                try:
+                    from app.utils.seed import seed_database
+                    seed_database()
+                    print("✅ Database auto-seeded successfully!")
+                except Exception as e:
+                    print(f"❌ Auto-seed failed: {e}")
+                    
     finally:
         db.close()
 
@@ -96,3 +114,53 @@ async def root():
 async def health_check():
     """Health check endpoint."""
     return {"status": "healthy"}
+
+
+@app.post("/admin/seed")
+async def manual_seed():
+    """
+    Manual seed endpoint - Seeds the database with sample data.
+    ⚠️ Remove this endpoint in production after initial setup!
+    """
+    try:
+        from app.utils.seed import seed_database
+        from app.models.book import Book
+        
+        db = SessionLocal()
+        try:
+            # Check if already seeded
+            book_count = db.query(Book).count()
+            
+            if book_count > 0:
+                return {
+                    "status": "info",
+                    "message": f"Database already has {book_count} books. Skipping seed.",
+                    "hint": "Delete the database to reseed or modify seed script to force reseed."
+                }
+            
+            # Run seed
+            seed_database()
+            
+            # Verify
+            new_count = db.query(Book).count()
+            
+            return {
+                "status": "success",
+                "message": "Database seeded successfully! 🌱",
+                "books_added": new_count
+            }
+        finally:
+            db.close()
+            
+    except ImportError as e:
+        return {
+            "status": "error",
+            "message": f"Seed module not found: {e}",
+            "hint": "Make sure app/utils/seed.py exists"
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": f"Seed failed: {str(e)}",
+            "type": type(e).__name__
+        }
