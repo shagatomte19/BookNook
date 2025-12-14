@@ -5,13 +5,19 @@ import { Link, useNavigate } from 'react-router-dom';
 import { BookOpen, Github, Mail, Lock, ArrowRight, Loader } from 'lucide-react';
 
 const Login: React.FC = () => {
-  const { login, socialLogin, resetPassword } = useApp();
+  const { login, socialLogin, resetPassword, user } = useApp();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [resetSent, setResetSent] = useState(false);
+
+  React.useEffect(() => {
+    if (user) {
+      navigate('/', { replace: true });
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

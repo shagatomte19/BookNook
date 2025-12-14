@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AppProvider, useApp } from './context/AppContext';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
@@ -50,7 +50,7 @@ const ProtectedAdminRoute: React.FC<{ children: React.ReactElement }> = ({ child
 const App: React.FC = () => {
   return (
     <AppProvider>
-      <HashRouter>
+      <BrowserRouter>
         <div className="flex flex-col min-h-screen text-gray-800 font-sans relative">
           <Navbar />
           <main className="flex-grow">
@@ -133,7 +133,7 @@ const App: React.FC = () => {
             </div>
           </footer>
         </div>
-      </HashRouter>
+      </BrowserRouter>
     </AppProvider>
   );
 };
