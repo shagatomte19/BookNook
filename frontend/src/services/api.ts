@@ -633,7 +633,7 @@ export const shelvesApi = {
   addBook: (shelfId: string, bookId: string) =>
     apiRequest<ShelfItem>(`/shelves/${shelfId}/books`, {
       method: 'POST',
-      body: JSON.stringify({ shelf_id: shelfId, book_id: bookId })
+      body: JSON.stringify({ book_id: bookId })
     }),
 
   removeBook: (shelfId: string, bookId: string) =>

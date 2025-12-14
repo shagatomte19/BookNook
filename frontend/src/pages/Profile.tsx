@@ -3,7 +3,7 @@ import React from 'react';
 import { useApp } from '../context/AppContext';
 import { Link } from 'react-router-dom';
 import StarRating from '../components/StarRating';
-import { BookOpen, Calendar, MapPin, PenTool, Shield } from 'lucide-react';
+import { BookOpen, Calendar, MapPin, PenTool, Shield, Edit, User as UserIcon } from 'lucide-react';
 
 const Profile: React.FC = () => {
   const { user, getUserReviews, books, posts } = useApp();
@@ -12,6 +12,9 @@ const Profile: React.FC = () => {
 
   // Helper to find book details for a review
   const getBookForReview = (bookId: string) => books.find(b => b.id === bookId);
+
+  // Display nickname if available, otherwise fall back to name
+  const displayName = user.nickname || user.name;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -25,10 +28,31 @@ const Profile: React.FC = () => {
               className="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover"
             />
             <div className="flex-1 text-center md:text-left">
-              <h1 className="text-3xl font-serif font-bold text-gray-900 mb-2">{user.name}</h1>
+              <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
+                <h1 className="text-3xl font-serif font-bold text-gray-900">{displayName}</h1>
+                <Link
+                  to="/onboarding"
+                  className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-brand-600 bg-brand-50 hover:bg-brand-100 rounded-lg transition-colors"
+                >
+                  <Edit size={14} />
+                  Edit Profile
+                </Link>
+              </div>
+
+              {/* Show original name if nickname is different */}
+              {user.nickname && user.nickname !== user.name && (
+                <p className="text-sm text-gray-500 mb-2">@{user.name}</p>
+              )}
+
               <p className="text-gray-600 mb-4 max-w-lg">{user.bio}</p>
 
               <div className="flex flex-wrap justify-center md:justify-start gap-6 text-sm text-gray-500">
+                {user.age && (
+                  <div className="flex items-center gap-1">
+                    <UserIcon size={16} />
+                    <span>{user.age} years old</span>
+                  </div>
+                )}
                 <div className="flex items-center gap-1">
                   <Calendar size={16} />
                   <span>Joined {user.joinedDate}</span>
