@@ -55,6 +55,8 @@ export default function AuthCallback() {
                         setUser(user);
                         localStorage.setItem('booknook_user', JSON.stringify(user));
                         localStorage.setItem('supabase_session', JSON.stringify(sessionData.session));
+                        // Save token for API calls
+                        localStorage.setItem('booknook_token', accessToken);
 
                         console.log('✅ Auth successful:', user);
 
@@ -92,6 +94,10 @@ export default function AuthCallback() {
 
                     setUser(user);
                     localStorage.setItem('booknook_user', JSON.stringify(user));
+                    // Save token for API calls
+                    if (data.session.access_token) {
+                        localStorage.setItem('booknook_token', data.session.access_token);
+                    }
                     navigate('/');
                 }
             } catch (error: any) {

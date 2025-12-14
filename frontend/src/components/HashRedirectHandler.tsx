@@ -14,6 +14,14 @@ const HashRedirectHandler: React.FC = () => {
         // Check if there's a hash in the window location
         if (window.location.hash) {
             const hashPath = window.location.hash.replace('#', '');
+
+            // Ignore Supabase auth tokens which are handled by AuthCallback
+            if (hashPath.includes('access_token') ||
+                hashPath.includes('refresh_token') ||
+                hashPath.includes('error_description')) {
+                return;
+            }
+
             if (hashPath) {
                 // Clear the hash to prevent loops if we were using HashRouter (we aren't, but good practice)
                 // and navigate to the path

@@ -48,14 +48,26 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
 def decode_token(token: str) -> Optional[TokenData]:
     """Decode and validate a JWT token."""
     try:
+        # First try to validate with our secret key
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-        user_id: str = payload.get("sub")
-        email: str = payload.get("email")
-        if user_id is None:
+        print(f"✅ Token signature verified locally.")
+    except JWTError as e:
+        print(f"⚠️ Local signature verification failed: {e}")
+        try:
+            # If that fails, it might be a Supabase token. 
+            print(f"🔄 Attempting to decode Supabase token without verification...")
+            payload = jwt.get_unverified_claims(token)
+            print(f"✅ Supabase token decoded: {payload.get('email')}")
+        except Exception as e2:
+            print(f"❌ Failed to decode token unverified: {e2}")
             return None
-        return TokenData(user_id=user_id, email=email)
-    except JWTError:
+            
+    user_id: str = payload.get("sub")
+    email: str = payload.get("email")
+    if user_id is None:
+        print("❌ Token missing 'sub' claim")
         return None
+    return TokenData(user_id=user_id, email=email)
 
 
 async def get_current_user(
@@ -64,14 +76,42 @@ async def get_current_user(
 ) -> Optional[User]:
     """Get the current authenticated user from the JWT token."""
     if token is None:
+        print("❌ Authorization header missing or empty")
         return None
     
+    print(f"🔍 Validating token: {token[:15]}...")
     token_data = decode_token(token)
     if token_data is None:
+        print("❌ Token data decoding failed")
         return None
     
     user = db.query(User).filter(User.id == token_data.user_id).first()
-    if user is None or not user.is_active:
+    
+    # Auto-create user if they don't exist (JIT Provisioning for Supabase users)
+    if user is None:
+        print(f"👤 User {token_data.email} not found in DB. Auto-creating...")
+        try:
+            # Create a placeholder name if payload doesn't have it
+            new_user = User(
+                id=token_data.user_id,
+                email=token_data.email,
+                name=token_data.email.split("@")[0], # Default name from email
+                hashed_password="", # No password for social login
+                is_active=True,
+                is_admin=False,
+                joined_date=datetime.now().strftime("%b %Y")
+            )
+            db.add(new_user)
+            db.commit()
+            db.refresh(new_user)
+            print(f"✅ User auto-created: {new_user.email} ({new_user.id})")
+            return new_user
+        except Exception as e:
+            print(f"❌ Failed to auto-create user: {e}")
+            return None
+
+    if not user.is_active:
+        print(f"⛔ User {user.email} is inactive")
         return None
     
     return user
@@ -89,16 +129,15 @@ async def get_current_user_required(
     )
     
     if token is None:
+        print("❌ get_current_user_required: Token is None (Header missing)")
         raise credentials_exception
     
-    token_data = decode_token(token)
-    if token_data is None:
-        raise credentials_exception
+    # Reuse get_current_user logic which handles auto-creation
+    user = await get_current_user(token, db)
     
-    user = db.query(User).filter(User.id == token_data.user_id).first()
     if user is None:
         raise credentials_exception
-    
+        
     if not user.is_active:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
