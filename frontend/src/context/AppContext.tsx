@@ -4,89 +4,11 @@ import { Book, Review, User, Author, Post, Publisher, Group, GroupPost, Theme, D
 import api, { authApi, usersApi, booksApi, authorsApi, reviewsApi, postsApi, groupsApi, messagesApi, adminApi, getToken, setToken, removeToken, getAdminToken, setAdminToken, removeAdminToken, adminAuthApi } from '../services/api';
 import { INITIAL_REVIEWS, CURRENT_USER } from '../constants';
 
-// Mock Initial Groups
-const INITIAL_GROUPS: Group[] = [
-  {
-    id: 'g1',
-    name: 'Sci-Fi Enthusiasts',
-    description: 'A place to discuss time travel, space operas, and the future of humanity.',
-    adminId: 'u1',
-    members: ['u1', 'u2', 'u3'],
-    pendingMembers: [],
-    imageUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80',
-    tags: ['Sci-Fi', 'Future', 'Tech']
-  },
-  {
-    id: 'g2',
-    name: 'Classic Literature Club',
-    description: 'Revisiting the classics from Austen to Dickens.',
-    adminId: 'u2',
-    members: ['u2', 'u3'],
-    pendingMembers: ['u1'],
-    imageUrl: 'https://images.unsplash.com/photo-1463320726281-696a485928c7?auto=format&fit=crop&w=800&q=80',
-    tags: ['Classics', 'History', 'Literature']
-  },
-];
-
-const INITIAL_GROUP_POSTS: GroupPost[] = [
-  {
-    id: 'gp1',
-    groupId: 'g1',
-    userId: 'u2',
-    userName: 'John Doe',
-    userAvatar: 'https://i.pravatar.cc/150?u=u2',
-    content: 'Has anyone read the latest Aris Thorne book? The ending blew my mind!',
-    date: '2 hours ago',
-    likes: 5
-  }
-];
-
-// Mock Users Data to support social features
-const MOCK_USERS: User[] = [
-  CURRENT_USER,
-  {
-    id: 'u_sarah',
-    name: 'Sarah Jenkins',
-    avatarUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&h=200&q=80',
-    bio: 'Editor turned author. Cozy mystery enthusiast.',
-    joinedDate: 'Mar 2022',
-    isAdmin: false,
-    following: [],
-    followers: ['u1']
-  },
-  {
-    id: 'u_editorial',
-    name: 'BookNook Editorial',
-    avatarUrl: 'https://ui-avatars.com/api/?name=BookNook+Editorial&background=138A92&color=fff',
-    bio: 'Official updates and curated lists from the BookNook team.',
-    joinedDate: 'Jan 2020',
-    isAdmin: true,
-    following: [],
-    followers: []
-  },
-  {
-    id: 'u2',
-    name: 'John Doe',
-    avatarUrl: 'https://i.pravatar.cc/150?u=u2',
-    bio: 'Casual reader.',
-    joinedDate: 'Feb 2023',
-    isAdmin: false,
-    following: [],
-    followers: []
-  }
-];
-
-// Mock Initial Messages
-const INITIAL_MESSAGES: DirectMessage[] = [
-  {
-    id: 'm1',
-    senderId: 'u_sarah',
-    receiverId: 'u1',
-    content: 'Hey Alice! Thanks for following. Have you read The Teapot Poisoning yet?',
-    timestamp: new Date(Date.now() - 86400000).toISOString(),
-    read: false
-  }
-];
+// Initial empty states
+const INITIAL_GROUPS: Group[] = [];
+const INITIAL_GROUP_POSTS: GroupPost[] = [];
+const MOCK_USERS: User[] = [CURRENT_USER]; // Keep CURRENT_USER for fallback/dev
+const INITIAL_MESSAGES: DirectMessage[] = [];
 
 interface AppContextType {
   books: Book[];
@@ -150,13 +72,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [authors, setAuthors] = useState<Author[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [publishers, setPublishers] = useState<Publisher[]>([]);
-  const [reviews, setReviews] = useState<Review[]>(INITIAL_REVIEWS);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [user, setUser] = useState<User | null>(null);
   const [adminUser, setAdminUser] = useState<User | null>(null);
-  const [allUsers, setAllUsers] = useState<User[]>(MOCK_USERS);
-  const [groups, setGroups] = useState<Group[]>(INITIAL_GROUPS);
-  const [groupPosts, setGroupPosts] = useState<GroupPost[]>(INITIAL_GROUP_POSTS);
-  const [messages, setMessages] = useState<DirectMessage[]>(INITIAL_MESSAGES);
+  const [allUsers, setAllUsers] = useState<User[]>([]);
+  const [groups, setGroups] = useState<Group[]>([]);
+  const [groupPosts, setGroupPosts] = useState<GroupPost[]>([]);
+  const [messages, setMessages] = useState<DirectMessage[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [theme, setThemeState] = useState<Theme>('light');
 
@@ -232,32 +154,100 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [dataResponse, postsResponse] = await Promise.all([
-          fetch('./data.json'),
-          fetch('./posts.json')
+        setIsLoading(true);
+        // Fetch all data in parallel
+        const [
+          booksData,
+          authorsData,
+          postsData,
+          groupsData,
+          usersData,
+          reviewsData,
+          messagesData
+        ] = await Promise.all([
+          booksApi.getAll(),
+          authorsApi.getAll(),
+          postsApi.getAll(),
+          groupsApi.getAll(),
+          usersApi.getAll(),
+          reviewsApi.getAll(),
+          getToken() ? messagesApi.getAll() : Promise.resolve([])
         ]);
 
-        if (!dataResponse.ok || !postsResponse.ok) {
-          throw new Error('Failed to fetch data');
-        }
+        // Map Backend Types to Frontend Types
 
-        const data = await dataResponse.json();
-        const postsData = await postsResponse.json();
+        const mappedBooks: Book[] = booksData.map((b: any) => ({
+          ...b,
+          coverUrl: b.cover_url,
+          publishedYear: b.published_year,
+          priceOptions: b.price_options?.map((p: any) => ({
+            ...p,
+            inStock: p.in_stock
+          })) || []
+        }));
 
-        setBooks(data.books || []);
-        setAuthors(data.authors || []);
-        setPublishers(data.publishers || []);
-        setPosts(postsData.posts || []);
+        const mappedAuthors: Author[] = authorsData.map((a: any) => ({
+          ...a,
+          imageUrl: a.image_url,
+          topBookIds: a.top_book_ids || []
+        }));
+
+        const mappedPosts: Post[] = postsData.map((p: any) => ({
+          ...p,
+          imageUrl: p.image_url
+        }));
+
+        const mappedGroups: Group[] = groupsData.map((g: any) => ({
+          ...g,
+          adminId: g.admin_id,
+          imageUrl: g.image_url,
+          pendingMembers: g.pending_members || []
+        }));
+
+        const mappedUsers: User[] = usersData.map((u: any) => ({
+          ...u,
+          avatarUrl: u.avatar_url,
+          isAdmin: u.is_admin,
+          joinedDate: u.joined_date
+        }));
+
+        const mappedReviews: Review[] = reviewsData.map((r: any) => ({
+          ...r,
+          bookId: r.book_id,
+          userId: r.user_id,
+          userName: r.user_name
+        }));
+
+        const mappedMessages: DirectMessage[] = messagesData.map((m: any) => ({
+          id: m.id,
+          senderId: m.sender_id,
+          receiverId: m.receiver_id,
+          content: m.content,
+          timestamp: m.timestamp || m.created_at || new Date().toISOString(),
+          read: m.read
+        }));
+
+        setBooks(mappedBooks);
+        setAuthors(mappedAuthors);
+        setPosts(mappedPosts);
+        setGroups(mappedGroups);
+        setAllUsers(mappedUsers);
+        setReviews(mappedReviews);
+        setMessages(mappedMessages);
+
+        // Extract unique publishers from books if not fetched separately
+        // (Assuming publisher is a string on Book, but we have a Publisher type)
+        // For now, we update publishers based on book data if needed, or leave empty.
 
       } catch (error) {
-        console.error("Error loading data:", error);
+        console.error("Error loading data from API:", error);
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchData();
-  }, []);
+  }, [user]); // Refetch when user changes (e.g. for messages)
 
   // Sync current user with allUsers list
   useEffect(() => {
