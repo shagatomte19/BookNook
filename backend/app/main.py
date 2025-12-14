@@ -20,7 +20,7 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc",
 )
-
+FRONTEND_URL = os.getenv("FRONTEND_URL", "")
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
