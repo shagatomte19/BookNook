@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Book, Review, User, Author, Post, Publisher, Group, GroupPost, Theme, DirectMessage } from '../types';
 import api, { authApi, usersApi, booksApi, authorsApi, reviewsApi, postsApi, groupsApi, messagesApi, adminApi, getToken, setToken, removeToken, getAdminToken, setAdminToken, removeAdminToken, adminAuthApi } from '../services/api';
+import { supabase } from '../services/supabase';
 import { INITIAL_REVIEWS, CURRENT_USER } from '../constants';
 
 // Initial empty states
@@ -53,7 +54,8 @@ interface AppContextType {
   // Auth functions
   login: (email: string, password: string) => Promise<boolean>;
   register: (name: string, email: string, password: string) => Promise<boolean>;
-  socialLogin: (provider: 'google' | 'github') => Promise<void>;
+  socialLogin: (provider: 'google') => Promise<void>;
+  resetPassword: (email: string) => Promise<boolean>;
   logout: () => void;
 
   // Theme functions
@@ -98,43 +100,59 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   // Check for stored tokens logic
   useEffect(() => {
-    const initAuth = async () => {
-      // User Token
-      const token = getToken();
-      if (token && !user) {
-        try {
-          const userData = await authApi.getMe();
-          // Map backend snake_case to frontend camelCase
-          const mappedUser = {
-            ...userData,
-            isAdmin: (userData as any).is_admin || false,
-            joinedDate: (userData as any).joined_date || 'N/A',
-            avatarUrl: (userData as any).avatar_url
-          } as unknown as User;
-          setUser(mappedUser);
-        } catch (error) {
-          removeToken();
-        }
-      }
+    // Supabase Auth State Listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (session?.user) {
+        // Map Supabase user to App User
+        const { user_metadata } = session.user;
+        const mappedUser: User = {
+          id: session.user.id,
+          name: user_metadata.name || user_metadata.full_name || session.user.email?.split('@')[0] || 'User',
+          avatarUrl: user_metadata.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(session.user.email || 'U')}&background=random`,
+          bio: 'BookNook Member',
+          joinedDate: new Date(session.user.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+          isAdmin: false,
+          following: [],
+          followers: [],
+          // Keep existing extra properties if we have them from backend in future
+        };
+        setUser(mappedUser);
+        setToken(session.access_token);
 
-      // Admin Token
+        // Also try to get backend profile if it exists to overwrite with richer data
+        try {
+          // We might need to ensure backend user exists here or just rely on shared ID
+          // const backendUser = await authApi.getMe();
+          // setUser({ ...mappedUser, ...backendUser }); 
+        } catch (e) {
+          console.log('Backend sync optional', e);
+        }
+
+      } else {
+        setUser(null);
+        removeToken();
+      }
+    });
+
+    // Check for Admin Token separately (keep existing logic or migrate? Keeping simple for now)
+    const initAuth = async () => {
+      // Admin Token logic remains for separate admin system
       const adminToken = getAdminToken();
       if (adminToken && !adminUser) {
         // Validation via stats call as a proxy for specific admin-me endpoint
         try {
           const stats = await adminApi.getDashboardStats();
           if (stats) {
-            // Set a placeholder admin user object since we validated the token
             setAdminUser({
               id: 'admin',
               name: 'BookNook Admin',
               email: 'admin@booknook.com',
               isAdmin: true,
-              isActive: true,
-              joinedDate: 'N/A',
               followers: [],
               following: [],
-              bio: 'System Administrator'
+              bio: 'System Administrator',
+              avatarUrl: '',
+              joinedDate: 'N/A'
             } as unknown as User);
           }
         } catch (error) {
@@ -143,6 +161,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       }
     };
     initAuth();
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   const setTheme = (newTheme: Theme) => {
@@ -264,62 +286,57 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   // Auth Functions
   const login = async (email: string, password: string): Promise<boolean> => {
-    await new Promise(resolve => setTimeout(resolve, 800));
-
-    // Check if user exists in mock DB (by fuzzy email logic for demo)
-    // For demo, we just reset to CURRENT_USER or create a new one
-    // But let's check if we have a mock user for this email logic
-    const loggedInUser: User = {
-      ...CURRENT_USER,
-      name: email.split('@')[0],
-      id: `u-${Date.now()}`
-    };
-
-    setUser(loggedInUser);
-    localStorage.setItem('booknook_user', JSON.stringify(loggedInUser));
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) {
+      console.error('Login error:', error.message);
+      return false;
+    }
     return true;
   };
 
   const register = async (name: string, email: string, password: string): Promise<boolean> => {
-    await new Promise(resolve => setTimeout(resolve, 800));
-
-    const newUser: User = {
-      id: `u-${Date.now()}`,
-      name: name,
-      avatarUrl: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`,
-      bio: 'New member of the BookNook community.',
-      joinedDate: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
-      isAdmin: false,
-      following: [],
-      followers: []
-    };
-
-    setUser(newUser);
-    localStorage.setItem('booknook_user', JSON.stringify(newUser));
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          name,
+        },
+      },
+    });
+    if (error) {
+      console.error('Registration error:', error.message);
+      return false;
+    }
     return true;
   };
 
-  const socialLogin = async (provider: 'google' | 'github') => {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    const socialUser: User = {
-      id: `u-${provider}-${Date.now()}`,
-      name: provider === 'google' ? 'Google User' : 'GitHub User',
-      avatarUrl: provider === 'google'
-        ? 'https://cdn-icons-png.flaticon.com/512/2991/2991148.png'
-        : 'https://cdn-icons-png.flaticon.com/512/25/25231.png',
-      bio: `Logged in via ${provider === 'google' ? 'Google' : 'GitHub'}.`,
-      joinedDate: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
-      isAdmin: false,
-      following: [],
-      followers: []
-    };
-
-    setUser(socialUser);
-    localStorage.setItem('booknook_user', JSON.stringify(socialUser));
+  const socialLogin = async (provider: 'google') => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: provider,
+      options: {
+        redirectTo: window.location.origin,
+      },
+    });
+    if (error) console.error('Social login error:', error.message);
   };
 
-  const logout = () => {
+  const resetPassword = async (email: string): Promise<boolean> => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    if (error) {
+      console.error('Reset password error:', error.message);
+      return false;
+    }
+    return true;
+  };
+
+  const logout = async () => {
+    await supabase.auth.signOut();
     setUser(null);
     removeToken();
   };
@@ -527,7 +544,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       addBook, updateBook, deleteBook, addPost, toggleAdmin,
       createGroup, joinGroup, acceptMember, rejectMember, addGroupPost,
       followUser, unfollowUser, sendMessage, markMessagesRead,
-      login, register, socialLogin, logout, setTheme,
+      login, register, socialLogin, resetPassword, logout, setTheme,
 
       // Admin
       adminUser, adminLogin, adminLogout
