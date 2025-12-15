@@ -8,9 +8,15 @@ from app.config import get_settings
 settings = get_settings()
 
 # Create SQLAlchemy engine
+# Use different connection args for SQLite vs PostgreSQL
+connect_args = {}
+if settings.DATABASE_URL.startswith("sqlite"):
+    connect_args = {"check_same_thread": False}  # Only needed for SQLite
+
 engine = create_engine(
     settings.DATABASE_URL,
-    connect_args={"check_same_thread": False}  # Needed for SQLite
+    connect_args=connect_args,
+    pool_pre_ping=True,  # Verify connections before using
 )
 
 # Session factory
