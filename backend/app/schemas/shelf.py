@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import List, Optional
 from datetime import datetime
 from app.models.shelf import ShelfType
@@ -11,13 +11,12 @@ class ShelfItemCreate(ShelfItemBase):
     pass
 
 class ShelfItemResponse(ShelfItemBase):
+    model_config = ConfigDict(from_attributes=True)
+    
     id: str
     shelf_id: str
     added_at: datetime
     book: Optional[BookResponse] = None
-
-    class Config:
-        orm_mode = True
 
 class ShelfBase(BaseModel):
     name: str
@@ -31,11 +30,11 @@ class ShelfUpdate(BaseModel):
     is_public: Optional[bool] = None
 
 class ShelfResponse(ShelfBase):
+    model_config = ConfigDict(from_attributes=True)
+    
     id: str
     user_id: str
-    type: str # ShelfType
+    type: str  # ShelfType
     items: List[ShelfItemResponse] = []
     created_at: datetime
 
-    class Config:
-        orm_mode = True
