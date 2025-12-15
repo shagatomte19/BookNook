@@ -1,136 +1,170 @@
-
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BookNook</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
-    <style>
-      :root {
-        /* Minimal Clean Theme (Warm & Airy) */
-        --bg-white: 255 255 255;
-        --text-gray-900: 23 23 23;    /* Neutral Black */
-        --text-gray-500: 115 115 115; /* Neutral Gray */
-        --gray-50: 250 250 250;       /* Very Light Gray */
-        --gray-100: 245 245 245;      
-        --gray-200: 229 229 229;      
-        
-        /* Brand Colors (Subtle Earthy/Terracotta) */
-        --brand-50: 255 252 251;
-        --brand-100: 254 242 238;
-        --brand-200: 252 228 220;
-        --brand-600: 196 112 85;      /* Terracotta like */
-        --brand-700: 154 78 55;
-        --brand-800: 124 58 42;
-        --brand-900: 99 44 32;
 
-        /* Input specific */
-        --input-bg: 255 255 255;
-        --input-text: 23 23 23;
-        --input-border: 229 229 229;
-        --input-placeholder: 156 163 175;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BookNook</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      /* Minimal Clean Theme (Warm & Airy) */
+      --bg-white: 255 255 255;
+      --text-gray-900: 23 23 23;
+      /* Neutral Black */
+      --text-gray-500: 115 115 115;
+      /* Neutral Gray */
+      --gray-50: 250 250 250;
+      /* Very Light Gray */
+      --gray-100: 245 245 245;
+      --gray-200: 229 229 229;
 
-      [data-theme='dark'] {
-        /* Dark Theme (Deep & Muted) */
-        --bg-white: 23 23 23;         
-        --text-gray-900: 250 250 250; 
-        --text-gray-500: 163 163 163; 
-        --gray-50: 10 10 10;           
-        --gray-100: 38 38 38;         
-        --gray-200: 64 64 64;         
+      /* Brand Colors (Subtle Earthy/Terracotta) */
+      --brand-50: 255 252 251;
+      --brand-100: 254 242 238;
+      --brand-200: 252 228 220;
+      --brand-600: 196 112 85;
+      /* Terracotta like */
+      --brand-700: 154 78 55;
+      --brand-800: 124 58 42;
+      --brand-900: 99 44 32;
 
-        --brand-50: 10 10 10;         
-        --brand-100: 23 23 23;
-        --brand-200: 38 38 38;
-        --brand-600: 196 112 85;     
-        --brand-700: 214 135 110;
-        --brand-800: 232 169 148;
-        --brand-900: 250 250 250;
+      /* Input specific */
+      --input-bg: 255 255 255;
+      --input-text: 23 23 23;
+      --input-border: 229 229 229;
+      --input-placeholder: 156 163 175;
+    }
 
-        /* Input specific - dark theme */
-        --input-bg: 38 38 38;
-        --input-text: 250 250 250;
-        --input-border: 64 64 64;
-        --input-placeholder: 163 163 163;
-      }
+    [data-theme='dark'] {
+      /* Dark Theme (Deep & Muted) */
+      --bg-white: 23 23 23;
+      --text-gray-900: 250 250 250;
+      --text-gray-500: 163 163 163;
+      --gray-50: 10 10 10;
+      --gray-100: 38 38 38;
+      --gray-200: 64 64 64;
 
-      /* No third motif needed for minimal. Simplify. */
+      --brand-50: 10 10 10;
+      --brand-100: 23 23 23;
+      --brand-200: 38 38 38;
+      --brand-600: 196 112 85;
+      --brand-700: 214 135 110;
+      --brand-800: 232 169 148;
+      --brand-900: 250 250 250;
 
-      body {
-        background-color: rgb(var(--bg-white));
-        color: rgb(var(--text-gray-900));
-        transition: background-color 0.3s ease, color 0.3s ease;
-      }
+      /* Input specific - dark theme */
+      --input-bg: 38 38 38;
+      --input-text: 250 250 250;
+      --input-border: 64 64 64;
+      --input-placeholder: 163 163 163;
+    }
 
-      /* Fix input visibility in dark mode */
-      input, textarea, select {
-        background-color: rgb(var(--input-bg)) !important;
-        color: rgb(var(--input-text)) !important;
-        border-color: rgb(var(--input-border)) !important;
-      }
+    /* No third motif needed for minimal. Simplify. */
 
-      input::placeholder, textarea::placeholder {
-        color: rgb(var(--input-placeholder)) !important;
-      }
+    body {
+      background-color: rgb(var(--bg-white));
+      color: rgb(var(--text-gray-900));
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
 
-      /* Fix focus states */
-      input:focus, textarea:focus, select:focus {
-        background-color: rgb(var(--input-bg)) !important;
-        color: rgb(var(--input-text)) !important;
-      }
-    </style>
-    <script>
-      tailwind.config = {
-        darkMode: 'class',
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ['"Inter"', 'sans-serif'],
-              serif: ['"Playfair Display"', 'serif'],
+    /* Fix input visibility in dark mode */
+    input,
+    textarea,
+    select {
+      background-color: rgb(var(--input-bg)) !important;
+      color: rgb(var(--input-text)) !important;
+      border-color: rgb(var(--input-border)) !important;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: rgb(var(--input-placeholder)) !important;
+    }
+
+    /* Fix focus states */
+    input:focus,
+    textarea:focus,
+    select:focus {
+      background-color: rgb(var(--input-bg)) !important;
+      color: rgb(var(--input-text)) !important;
+    }
+
+    /* Custom Scrollbar to prevent layout shift */
+    html {
+      scrollbar-gutter: stable;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(156, 163, 175, 0.5);
+      border-radius: 3px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(156, 163, 175, 0.8);
+    }
+  </style>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Inter"', 'sans-serif'],
+            serif: ['"Playfair Display"', 'serif'],
+          },
+          colors: {
+            white: 'rgb(var(--bg-white) / <alpha-value>)',
+            gray: {
+              50: 'rgb(var(--gray-50) / <alpha-value>)',
+              100: 'rgb(var(--gray-100) / <alpha-value>)',
+              200: 'rgb(var(--gray-200) / <alpha-value>)',
+              300: 'rgb(var(--gray-200) / <alpha-value>)', // Alias
+              400: 'rgb(var(--text-gray-500) / <alpha-value>)',
+              500: 'rgb(var(--text-gray-500) / <alpha-value>)',
+              600: 'rgb(var(--text-gray-500) / <alpha-value>)',
+              700: 'rgb(var(--text-gray-900) / <alpha-value>)',
+              800: 'rgb(var(--text-gray-900) / <alpha-value>)',
+              900: 'rgb(var(--text-gray-900) / <alpha-value>)',
             },
-            colors: {
-              white: 'rgb(var(--bg-white) / <alpha-value>)',
-              gray: {
-                50: 'rgb(var(--gray-50) / <alpha-value>)',
-                100: 'rgb(var(--gray-100) / <alpha-value>)',
-                200: 'rgb(var(--gray-200) / <alpha-value>)',
-                300: 'rgb(var(--gray-200) / <alpha-value>)', // Alias
-                400: 'rgb(var(--text-gray-500) / <alpha-value>)',
-                500: 'rgb(var(--text-gray-500) / <alpha-value>)',
-                600: 'rgb(var(--text-gray-500) / <alpha-value>)',
-                700: 'rgb(var(--text-gray-900) / <alpha-value>)',
-                800: 'rgb(var(--text-gray-900) / <alpha-value>)',
-                900: 'rgb(var(--text-gray-900) / <alpha-value>)',
-              },
-              brand: {
-                50: 'rgb(var(--brand-50) / <alpha-value>)',
-                100: 'rgb(var(--brand-100) / <alpha-value>)',
-                200: 'rgb(var(--brand-200) / <alpha-value>)',
-                300: 'rgb(var(--brand-200) / <alpha-value>)', // Alias
-                400: 'rgb(var(--brand-600) / <alpha-value>)', // Alias
-                500: 'rgb(var(--brand-600) / <alpha-value>)', // Alias
-                600: 'rgb(var(--brand-600) / <alpha-value>)',
-                700: 'rgb(var(--brand-700) / <alpha-value>)',
-                800: 'rgb(var(--brand-800) / <alpha-value>)',
-                900: 'rgb(var(--brand-900) / <alpha-value>)',
-              }
-            },
-            animation: {
-              'fade-in': 'fadeIn 0.5s ease-out',
-            },
-            keyframes: {
-              fadeIn: {
-                '0%': { opacity: '0', transform: 'translateY(10px)' },
-                '100%': { opacity: '1', transform: 'translateY(0)' },
-              }
+            brand: {
+              50: 'rgb(var(--brand-50) / <alpha-value>)',
+              100: 'rgb(var(--brand-100) / <alpha-value>)',
+              200: 'rgb(var(--brand-200) / <alpha-value>)',
+              300: 'rgb(var(--brand-200) / <alpha-value>)', // Alias
+              400: 'rgb(var(--brand-600) / <alpha-value>)', // Alias
+              500: 'rgb(var(--brand-600) / <alpha-value>)', // Alias
+              600: 'rgb(var(--brand-600) / <alpha-value>)',
+              700: 'rgb(var(--brand-700) / <alpha-value>)',
+              800: 'rgb(var(--brand-800) / <alpha-value>)',
+              900: 'rgb(var(--brand-900) / <alpha-value>)',
             }
           },
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-out',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0', transform: 'translateY(10px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            }
+          }
         },
-      }
-    </script>
+      },
+    }
+  </script>
   <script type="importmap">
 {
   "imports": {
@@ -147,9 +181,10 @@
 }
 </script>
 </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/index.tsx"></script>
-  </body>
-</html>
 
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/index.tsx"></script>
+</body>
+
+</html>

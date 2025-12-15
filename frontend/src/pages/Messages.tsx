@@ -144,11 +144,11 @@ const Messages: React.FC = () => {
            </div>
 
            {/* Messages */}
-           <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50">
+           <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50 scroll-smooth custom-scrollbar">
               {activeConversation.map(msg => {
                  const isMe = msg.senderId === user.id;
                  return (
-                   <div key={msg.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
+                   <div key={msg.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'} animate-fade-in`}>
                       <div className={`max-w-[70%] px-5 py-3 rounded-2xl shadow-sm ${
                          isMe 
                            ? 'bg-brand-600 text-white rounded-br-none' 

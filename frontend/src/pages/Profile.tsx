@@ -1,14 +1,45 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { Link } from 'react-router-dom';
 import StarRating from '../components/StarRating';
-import { BookOpen, Calendar, MapPin, PenTool, Shield, Edit, User as UserIcon } from 'lucide-react';
+import { BookOpen, Calendar, MapPin, PenTool, Shield, Edit, User as UserIcon, BookMarked, Check, Layers } from 'lucide-react';
+import { shelvesApi, Shelf } from '../services/api';
+
+// Reading status shelf names
+const READING_STATUS_SHELVES = {
+  WANT_TO_READ: 'want_to_read',
+  CURRENTLY_READING: 'currently_reading',
+  READ: 'read'
+};
 
 const Profile: React.FC = () => {
   const { user, getUserReviews, books, posts } = useApp();
   const userReviews = getUserReviews(user.id);
   const userPosts = posts.filter(p => p.author === user.name);
+
+  const [myShelves, setMyShelves] = useState<Shelf[]>([]);
+  const [activeShelfTab, setActiveShelfTab] = useState<'status' | 'custom'>('status');
+
+  // Fetch user shelves
+  useEffect(() => {
+    if (user) {
+      shelvesApi.getUserShelves(user.id).then(setMyShelves).catch(console.error);
+    }
+  }, [user]);
+
+  // Calculate reading stats
+  const wantToReadShelf = myShelves.find(s => s.name === READING_STATUS_SHELVES.WANT_TO_READ);
+  const currentlyReadingShelf = myShelves.find(s => s.name === READING_STATUS_SHELVES.CURRENTLY_READING);
+  const readShelf = myShelves.find(s => s.name === READING_STATUS_SHELVES.READ);
+
+  const wantToReadCount = wantToReadShelf?.items.length || 0;
+  const currentlyReadingCount = currentlyReadingShelf?.items.length || 0;
+  const readCount = readShelf?.items.length || 0;
+
+  // Custom shelves (non-status)
+  const statusShelfNames = Object.values(READING_STATUS_SHELVES);
+  const customShelves = myShelves.filter(s => !statusShelfNames.includes(s.name as any));
 
   // Helper to find book details for a review
   const getBookForReview = (bookId: string) => books.find(b => b.id === bookId);
@@ -74,24 +105,72 @@ const Profile: React.FC = () => {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-          {/* Sidebar Stats (Mock) */}
+          {/* Sidebar Stats */}
           <div className="space-y-6">
+            {/* Reading Status Cards */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-              <h3 className="font-serif font-bold text-gray-900 mb-4">Reading Stats</h3>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-gray-600">Books read this year</span>
-                  <span className="font-bold text-brand-600">12</span>
-                </div>
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-gray-600">Avg. Rating</span>
-                  <span className="font-bold text-brand-600">4.2</span>
-                </div>
-                <div className="w-full bg-gray-100 rounded-full h-2 mt-2">
-                  <div className="bg-brand-500 h-2 rounded-full" style={{ width: '60%' }}></div>
-                </div>
-                <p className="text-xs text-gray-400 text-center">Reading Challenge: 12/20</p>
+              <h3 className="font-serif font-bold text-gray-900 mb-4">Reading Status</h3>
+              <div className="space-y-3">
+                <Link
+                  to="#"
+                  className="flex justify-between items-center p-3 rounded-lg bg-amber-50 hover:bg-amber-100 transition-colors"
+                >
+                  <div className="flex items-center gap-2">
+                    <BookMarked size={18} className="text-amber-600" />
+                    <span className="text-sm font-medium text-amber-800">Want to Read</span>
+                  </div>
+                  <span className="font-bold text-amber-600">{wantToReadCount}</span>
+                </Link>
+
+                <Link
+                  to="#"
+                  className="flex justify-between items-center p-3 rounded-lg bg-blue-50 hover:bg-blue-100 transition-colors"
+                >
+                  <div className="flex items-center gap-2">
+                    <BookOpen size={18} className="text-blue-600" />
+                    <span className="text-sm font-medium text-blue-800">Currently Reading</span>
+                  </div>
+                  <span className="font-bold text-blue-600">{currentlyReadingCount}</span>
+                </Link>
+
+                <Link
+                  to="#"
+                  className="flex justify-between items-center p-3 rounded-lg bg-green-50 hover:bg-green-100 transition-colors"
+                >
+                  <div className="flex items-center gap-2">
+                    <Check size={18} className="text-green-600" />
+                    <span className="text-sm font-medium text-green-800">Read</span>
+                  </div>
+                  <span className="font-bold text-green-600">{readCount}</span>
+                </Link>
               </div>
+            </div>
+
+            {/* My Shelves */}
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-serif font-bold text-gray-900 flex items-center gap-2">
+                  <Layers size={18} className="text-brand-600" />
+                  My Shelves
+                </h3>
+                <span className="text-xs text-gray-400">{customShelves.length} shelves</span>
+              </div>
+
+              {customShelves.length > 0 ? (
+                <div className="space-y-2">
+                  {customShelves.map(shelf => (
+                    <div
+                      key={shelf.id}
+                      className="flex justify-between items-center p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
+                    >
+                      <span className="text-sm font-medium text-gray-700 capitalize">{shelf.name.replace(/_/g, ' ')}</span>
+                      <span className="text-xs text-gray-400">{shelf.items.length} books</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-gray-500 text-center py-4">No custom shelves yet. Create one from a book page!</p>
+              )}
             </div>
 
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">

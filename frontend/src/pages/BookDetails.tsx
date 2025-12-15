@@ -4,10 +4,19 @@ import { useApp } from '../context/AppContext';
 import { generateBookInsight } from '../services/geminiService';
 import StarRating from '../components/StarRating';
 import BookCard from '../components/BookCard';
-import { ShoppingCart, Star, ExternalLink, Sparkles, ChevronLeft, ChevronDown, ChevronUp, User as UserIcon, Building2, Layers } from 'lucide-react';
+import { ShoppingCart, Star, ExternalLink, Sparkles, ChevronLeft, ChevronDown, ChevronUp, User as UserIcon, Building2, Layers, BookMarked, BookOpen, Check } from 'lucide-react';
 import { Review } from '../types';
 import ReactMarkdown from 'react-markdown';
 import { shelvesApi, Shelf } from '../services/api';
+
+// Special reading status shelf names
+const READING_STATUS_SHELVES = {
+  WANT_TO_READ: 'want_to_read',
+  CURRENTLY_READING: 'currently_reading',
+  READ: 'read'
+};
+
+type ReadingStatus = 'want_to_read' | 'currently_reading' | 'read' | null;
 
 const BookDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -28,6 +37,8 @@ const BookDetails: React.FC = () => {
   const [shelfLoading, setShelfLoading] = useState(false);
   const [showCreateShelf, setShowCreateShelf] = useState(false);
   const [newShelfName, setNewShelfName] = useState('');
+  const [readingStatus, setReadingStatus] = useState<ReadingStatus>(null);
+  const [statusLoading, setStatusLoading] = useState(false);
 
   // Scroll to top on mount and when id changes
   useEffect(() => {
@@ -37,9 +48,72 @@ const BookDetails: React.FC = () => {
     setShelfMessage(null);
 
     if (user) {
-      shelvesApi.getUserShelves(user.id).then(setMyShelves).catch(console.error);
+      shelvesApi.getUserShelves(user.id).then(shelves => {
+        setMyShelves(shelves);
+        // Detect current reading status
+        if (book) {
+          for (const shelf of shelves) {
+            if (shelf.name === READING_STATUS_SHELVES.WANT_TO_READ && shelf.items.some(i => i.book_id === book.id)) {
+              setReadingStatus('want_to_read');
+              break;
+            } else if (shelf.name === READING_STATUS_SHELVES.CURRENTLY_READING && shelf.items.some(i => i.book_id === book.id)) {
+              setReadingStatus('currently_reading');
+              break;
+            } else if (shelf.name === READING_STATUS_SHELVES.READ && shelf.items.some(i => i.book_id === book.id)) {
+              setReadingStatus('read');
+              break;
+            }
+          }
+        }
+      }).catch(console.error);
     }
-  }, [id, user]);
+  }, [id, user, book?.id]);
+
+  // Handle reading status change
+  const handleReadingStatus = async (status: ReadingStatus) => {
+    if (!book || !user || statusLoading) return;
+
+    setStatusLoading(true);
+
+    try {
+      // Find or create the status shelf
+      let statusShelf = myShelves.find(s => s.name === status);
+
+      if (!statusShelf && status) {
+        // Create the shelf
+        statusShelf = await shelvesApi.createShelf({ name: status });
+        setMyShelves([...myShelves, statusShelf]);
+      }
+
+      // Remove from other status shelves first
+      const statusShelfNames = Object.values(READING_STATUS_SHELVES);
+      for (const shelf of myShelves) {
+        if (statusShelfNames.includes(shelf.name as any) && shelf.items.some(i => i.book_id === book.id)) {
+          try {
+            await shelvesApi.removeBook(shelf.id, book.id);
+          } catch (e) {
+            // Ignore if not found
+          }
+        }
+      }
+
+      // Add to new status shelf
+      if (statusShelf && status) {
+        await shelvesApi.addBook(statusShelf.id, book.id);
+      }
+
+      setReadingStatus(status);
+
+      // Refresh shelves
+      const updatedShelves = await shelvesApi.getUserShelves(user.id);
+      setMyShelves(updatedShelves);
+
+    } catch (e) {
+      console.error('Failed to update reading status:', e);
+    } finally {
+      setStatusLoading(false);
+    }
+  };
 
   const handleAddToShelf = async (shelfId: string) => {
     if (!book) return;
@@ -159,6 +233,53 @@ const BookDetails: React.FC = () => {
           <div className="w-full max-w-sm rounded-lg shadow-2xl overflow-hidden bg-gray-100 transform hover:scale-[1.02] transition-transform duration-500">
             <img src={book.coverUrl} alt={book.title} className="w-full h-auto object-cover" />
           </div>
+
+          {/* Reading Status Buttons */}
+          {user && (
+            <div className="w-full max-w-sm space-y-2">
+              <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Reading Status</p>
+              <div className="flex flex-col gap-2">
+                <button
+                  onClick={() => handleReadingStatus(readingStatus === 'want_to_read' ? null : 'want_to_read')}
+                  disabled={statusLoading}
+                  className={`w-full py-3 px-4 rounded-xl font-medium text-sm flex items-center justify-center gap-2 transition-all ${readingStatus === 'want_to_read'
+                      ? 'bg-amber-500 text-white shadow-md'
+                      : 'bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200'
+                    } ${statusLoading ? 'opacity-50 cursor-wait' : ''}`}
+                >
+                  <BookMarked size={18} />
+                  Want to Read
+                  {readingStatus === 'want_to_read' && <Check size={16} className="ml-auto" />}
+                </button>
+
+                <button
+                  onClick={() => handleReadingStatus(readingStatus === 'currently_reading' ? null : 'currently_reading')}
+                  disabled={statusLoading}
+                  className={`w-full py-3 px-4 rounded-xl font-medium text-sm flex items-center justify-center gap-2 transition-all ${readingStatus === 'currently_reading'
+                      ? 'bg-blue-500 text-white shadow-md'
+                      : 'bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200'
+                    } ${statusLoading ? 'opacity-50 cursor-wait' : ''}`}
+                >
+                  <BookOpen size={18} />
+                  Currently Reading
+                  {readingStatus === 'currently_reading' && <Check size={16} className="ml-auto" />}
+                </button>
+
+                <button
+                  onClick={() => handleReadingStatus(readingStatus === 'read' ? null : 'read')}
+                  disabled={statusLoading}
+                  className={`w-full py-3 px-4 rounded-xl font-medium text-sm flex items-center justify-center gap-2 transition-all ${readingStatus === 'read'
+                      ? 'bg-green-500 text-white shadow-md'
+                      : 'bg-green-50 text-green-700 hover:bg-green-100 border border-green-200'
+                    } ${statusLoading ? 'opacity-50 cursor-wait' : ''}`}
+                >
+                  <Check size={18} />
+                  Read
+                  {readingStatus === 'read' && <Check size={16} className="ml-auto" />}
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Shelf Actions */}
           <div className="w-full max-w-sm relative">
