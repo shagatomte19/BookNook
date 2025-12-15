@@ -19,6 +19,10 @@ engine = create_engine(
     pool_pre_ping=True,  # Verify connections before using
 )
 
+# Log which database we're connected to
+db_type = "PostgreSQL (Supabase)" if "postgresql" in settings.DATABASE_URL else "SQLite"
+print(f"🔌 Database: {db_type}")
+
 # Session factory
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

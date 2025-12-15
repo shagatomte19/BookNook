@@ -115,7 +115,8 @@ def seed_database():
         
         # Seed Posts
         print("\n📝 Seeding posts...")
-        posts = posts_data.get("posts", [])
+        # posts.json is a list, not a dict with 'posts' key
+        posts = posts_data if isinstance(posts_data, list) else posts_data.get("posts", [])
         for post_data in posts:
             existing = db.query(Post).filter(Post.id == post_data["id"]).first()
             if not existing:
