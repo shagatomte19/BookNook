@@ -1,8 +1,9 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Book, Review, User, Author, Post, Publisher, Group, GroupPost, Theme, DirectMessage } from '../types';
-import api, { authApi, usersApi, booksApi, authorsApi, reviewsApi, postsApi, groupsApi, messagesApi, adminApi, getToken, setToken, removeToken, getAdminToken, setAdminToken, removeAdminToken, adminAuthApi } from '../services/api';
+import { authApi, getToken, setToken, removeToken, getAdminToken, setAdminToken, removeAdminToken, adminAuthApi } from '../services/api';
 import { supabase, supabaseAuth } from '../services/supabase';
+import supabaseData from '../services/supabaseData';
 import { INITIAL_REVIEWS, CURRENT_USER } from '../constants';
 
 // Initial empty states
@@ -189,7 +190,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       if (adminToken && !adminUser) {
         // Validation via stats call as a proxy for specific admin-me endpoint
         try {
-          const stats = await adminApi.getDashboardStats();
+          const stats = await supabaseData.admin.getDashboardStats();
           if (stats) {
             setAdminUser({
               id: 'admin',
@@ -225,7 +226,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        // Fetch all data in parallel
+        // Fetch all data from Supabase in parallel
         const [
           booksData,
           authorsData,
@@ -233,16 +234,16 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           groupsData,
           usersData,
           reviewsData,
-          messagesData
         ] = await Promise.all([
-          booksApi.getAll(),
-          authorsApi.getAll(),
-          postsApi.getAll(),
-          groupsApi.getAll(),
-          usersApi.getAll(),
-          reviewsApi.getAll(),
-          getToken() ? messagesApi.getAll() : Promise.resolve([])
+          supabaseData.books.getAll(),
+          supabaseData.authors.getAll(),
+          supabaseData.posts.getAll(),
+          supabaseData.groups.getAll(),
+          supabaseData.profiles.getAll(),
+          supabaseData.reviews.getAll(),
         ]);
+        // Messages now handled by ChatContext with Supabase real-time
+        const messagesData: DirectMessage[] = [];
 
         // Map Backend Types to Frontend Types
 

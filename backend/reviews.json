@@ -1,0 +1,24 @@
+[
+  {
+    "id": "r1",
+    "book_id": "b1",
+    "user_id": "u_sarah",
+    "user_name": "Sarah Jenkins",
+    "rating": 5,
+    "content": "Absolutely mind-bending! Thorne outdoes himself with this exploration of temporal mechanics.",
+    "date": "Dec 1, 2024",
+    "is_approved": 1,
+    "created_at": "2025-12-14 22:31:45"
+  },
+  {
+    "id": "r2",
+    "book_id": "b2",
+    "user_id": "u2",
+    "user_name": "John Doe",
+    "rating": 4,
+    "content": "A beautiful homage to the noir genre with stunning period detail.",
+    "date": "Nov 28, 2024",
+    "is_approved": 1,
+    "created_at": "2025-12-14 22:31:45"
+  }
+]

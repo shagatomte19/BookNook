@@ -1,0 +1,5 @@
+id,email,name,hashed_password,avatar_url,bio,is_admin,is_active,joined_date,age,nickname,profile_completed,following,followers,created_at,updated_at
+admin-001,admin@booknook.com,Admin,$2b$12$VKnTtDLvKMtmHXynZVUCCub.mkbLmj/ulBrlFmeaBGkkqsG/1i4ZK,https://ui-avatars.com/api/?name=Admin&background=dc2626&color=fff,BookNook System Administrator,1,1,Dec 2025,,,0,[],[],2025-12-14 21:50:22,
+u_sarah,sarah@booknook.com,Sarah Jenkins,$2b$12$E5NFYWmFUj3emErb8lKWGOm6pMOHiqpYWz.tTePGOeUIeVK7XoNES,https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&h=200&q=80,Editor turned author. Cozy mystery enthusiast.,0,1,Jan 2024,,,0,[],[],2025-12-14 22:31:45,
+u_editorial,editorial@booknook.com,BookNook Editorial,$2b$12$J0xCDPgrHWKt/v0hw4k.F.J5KE54T328FGK4pJrgyMtjxQI7r7f3u,https://ui-avatars.com/api/?name=BookNook+Editorial&background=138A92&color=fff,Official updates and curated lists from the BookNook team.,1,1,Jan 2024,,,0,[],[],2025-12-14 22:31:45,
+u2,john@booknook.com,John Doe,$2b$12$hzezWD2v455KCpNptwD7SOpgkQAGNPAmqlTxt5cT9jzzCFlh9YHwa,https://i.pravatar.cc/150?u=u2,Casual reader.,0,1,Jan 2024,,,0,[],[],2025-12-14 22:31:45,
