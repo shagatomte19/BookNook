@@ -61,6 +61,41 @@ export interface DirectMessage {
   read: boolean;
 }
 
+// Supabase Real-time Chat Types
+export interface Conversation {
+  id: string;
+  name: string | null;
+  isGroup: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ConversationParticipant {
+  conversationId: string;
+  odId: string;
+  userNickname: string | null;
+  userAvatar: string | null;
+  joinedAt: string;
+  lastReadAt: string;
+}
+
+export interface ChatMessage {
+  id: string;
+  conversationId: string;
+  senderId: string;
+  senderNickname: string;
+  senderAvatar: string | null;
+  content: string;
+  createdAt: string;
+}
+
+export interface TypingIndicator {
+  conversationId: string;
+  userId: string;
+  userNickname: string;
+  updatedAt: string;
+}
+
 export interface Author {
   id: string;
   name: string;
