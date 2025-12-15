@@ -25,6 +25,12 @@
         --brand-700: 154 78 55;
         --brand-800: 124 58 42;
         --brand-900: 99 44 32;
+
+        /* Input specific */
+        --input-bg: 255 255 255;
+        --input-text: 23 23 23;
+        --input-border: 229 229 229;
+        --input-placeholder: 156 163 175;
       }
 
       [data-theme='dark'] {
@@ -43,6 +49,12 @@
         --brand-700: 214 135 110;
         --brand-800: 232 169 148;
         --brand-900: 250 250 250;
+
+        /* Input specific - dark theme */
+        --input-bg: 38 38 38;
+        --input-text: 250 250 250;
+        --input-border: 64 64 64;
+        --input-placeholder: 163 163 163;
       }
 
       /* No third motif needed for minimal. Simplify. */
@@ -51,6 +63,23 @@
         background-color: rgb(var(--bg-white));
         color: rgb(var(--text-gray-900));
         transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      /* Fix input visibility in dark mode */
+      input, textarea, select {
+        background-color: rgb(var(--input-bg)) !important;
+        color: rgb(var(--input-text)) !important;
+        border-color: rgb(var(--input-border)) !important;
+      }
+
+      input::placeholder, textarea::placeholder {
+        color: rgb(var(--input-placeholder)) !important;
+      }
+
+      /* Fix focus states */
+      input:focus, textarea:focus, select:focus {
+        background-color: rgb(var(--input-bg)) !important;
+        color: rgb(var(--input-text)) !important;
       }
     </style>
     <script>

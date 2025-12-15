@@ -113,7 +113,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       if (session?.user) {
         // Map Supabase user to App User
         const { user_metadata } = session.user;
-        const mappedUser: User = {
+
+        // First check localStorage for existing user data
+        const savedUserData = localStorage.getItem('booknook_user');
+        const savedUser = savedUserData ? JSON.parse(savedUserData) : null;
+
+        // Check if the saved user is for the same user ID
+        const isExistingUser = savedUser && savedUser.id === session.user.id;
+
+        const baseUser: User = {
           id: session.user.id,
           name: user_metadata.name || user_metadata.full_name || session.user.email?.split('@')[0] || 'User',
           avatarUrl: user_metadata.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(session.user.email || 'U')}&background=random`,
@@ -122,33 +130,49 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           isAdmin: false,
           following: [],
           followers: [],
-          profileCompleted: false, // Will be updated by backend sync
-          // Keep existing extra properties if we have them from backend in future
+          // Preserve existing profileCompleted from localStorage if same user
+          profileCompleted: isExistingUser ? savedUser.profileCompleted : false,
+          nickname: isExistingUser ? savedUser.nickname : undefined,
+          age: isExistingUser ? savedUser.age : undefined,
         };
-        setUser(mappedUser);
+
         setToken(session.access_token);
 
-        // Also try to get backend profile if it exists to overwrite with richer data
+        // Try to get backend profile first, then set user
         try {
           const backendUser = await authApi.getMe();
           if (backendUser) {
             const mergedUser: User = {
-              ...mappedUser,
-              ...backendUser,
+              ...baseUser,
+              // Override with backend data
+              nickname: backendUser.nickname || baseUser.nickname,
+              age: backendUser.age || baseUser.age,
+              bio: backendUser.bio || baseUser.bio,
               // Ensure these fields from backend take precedence
-              profileCompleted: backendUser.profile_completed || backendUser.profileCompleted || false,
-              isAdmin: backendUser.is_admin || backendUser.isAdmin || false,
-              avatarUrl: backendUser.avatar_url || mappedUser.avatarUrl,
-              joinedDate: backendUser.joined_date || mappedUser.joinedDate
+              profileCompleted: backendUser.profile_completed === true || baseUser.profileCompleted === true,
+              isAdmin: backendUser.is_admin || false,
+              avatarUrl: backendUser.avatar_url || baseUser.avatarUrl,
+              joinedDate: backendUser.joined_date || baseUser.joinedDate,
+              following: backendUser.following || baseUser.following,
+              followers: backendUser.followers || baseUser.followers,
             };
             setUser(mergedUser);
             localStorage.setItem('booknook_user', JSON.stringify(mergedUser));
             console.log('✅ Backend profile synced:', mergedUser);
+          } else {
+            // No backend user, use base user
+            setUser(baseUser);
+            if (!isExistingUser) {
+              localStorage.setItem('booknook_user', JSON.stringify(baseUser));
+            }
           }
         } catch (e) {
-          console.log('Backend sync failed, using session data only:', e);
-          // If 404/401, likely user doesn't exist yet or token invalid, 
-          // but logging prevents silent failures.
+          console.log('Backend sync failed, using session/local data:', e);
+          // Use base user (which includes localStorage data if available)
+          setUser(baseUser);
+          if (!isExistingUser) {
+            localStorage.setItem('booknook_user', JSON.stringify(baseUser));
+          }
         }
 
       } else {

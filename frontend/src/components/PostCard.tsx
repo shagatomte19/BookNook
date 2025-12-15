@@ -1,7 +1,6 @@
-
 import React from 'react';
 import { Post } from '../types';
-import { MessageSquare, Heart, Share2, ArrowRight } from 'lucide-react';
+import { MessageSquare, Heart, Share2, ArrowRight, ThumbsDown, User as UserIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { interactionsApi } from '../services/api';
@@ -16,6 +15,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
 
   const [likes, setLikes] = React.useState<number>(0);
   const [isLiked, setIsLiked] = React.useState(false);
+  const [isDisliked, setIsDisliked] = React.useState(false);
   const [showComments, setShowComments] = React.useState(false);
   const [comments, setComments] = React.useState<any[]>([]);
   const [newComment, setNewComment] = React.useState('');
@@ -41,6 +41,9 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
     e.preventDefault();
     if (!user) return;
 
+    // If disliked, remove dislike first
+    if (isDisliked) setIsDisliked(false);
+
     // Optimistic update
     const previousLiked = isLiked;
     const previousLikes = likes;
@@ -55,6 +58,19 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
       setIsLiked(previousLiked);
       setLikes(previousLikes);
     }
+  };
+
+  const handleDislike = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!user) return;
+
+    // If liked, remove like first
+    if (isLiked) {
+      setIsLiked(false);
+      setLikes(likes - 1);
+    }
+
+    setIsDisliked(!isDisliked);
   };
 
   const toggleComments = async (e: React.MouseEvent) => {
@@ -124,28 +140,46 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
             {post.excerpt}
           </p>
 
+          {/* Author & Actions */}
           <div className="flex items-center justify-between border-t border-gray-50 pt-4 mt-2">
-            <div className="flex items-center space-x-2 text-xs font-medium text-gray-500">
+            {/* Author Info */}
+            <div className="flex items-center gap-3">
               {authorUser ? (
                 <Link
                   to={`/user/${authorUser.id}`}
                   onClick={(e) => e.stopPropagation()}
-                  className="flex items-center hover:text-brand-600 transition-colors"
+                  className="flex items-center gap-2 hover:opacity-80 transition-opacity"
                 >
-                  <span>By {post.author}</span>
+                  <div className="w-8 h-8 rounded-full bg-gray-100 overflow-hidden border border-gray-200">
+                    <img src={authorUser.avatarUrl} alt={authorUser.name} className="w-full h-full object-cover" />
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-gray-900">{post.author}</span>
+                    <span className="block text-xs text-gray-500">View Profile</span>
+                  </div>
                 </Link>
               ) : (
-                <span>By {post.author}</span>
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+                    <UserIcon size={14} className="text-gray-400" />
+                  </div>
+                  <span className="text-sm font-medium text-gray-700">{post.author}</span>
+                </div>
               )}
             </div>
-            <div className="flex items-center space-x-4">
+
+            {/* Action Buttons */}
+            <div className="flex items-center space-x-3">
               <button onClick={handleLike} className={`flex items-center space-x-1 transition-colors ${isLiked ? 'text-red-500' : 'text-gray-400 hover:text-red-500'}`}>
                 <Heart size={18} fill={isLiked ? "currentColor" : "none"} />
-                <span className="text-xs">{likes}</span>
+                <span className="text-xs font-medium">{likes > 0 ? likes : ''}</span>
+              </button>
+              <button onClick={handleDislike} className={`flex items-center transition-colors ${isDisliked ? 'text-blue-500' : 'text-gray-400 hover:text-blue-500'}`}>
+                <ThumbsDown size={18} fill={isDisliked ? "currentColor" : "none"} />
               </button>
               <button onClick={toggleComments} className="flex items-center space-x-1 text-gray-400 hover:text-blue-500 transition-colors">
                 <MessageSquare size={18} />
-                <span className="text-xs">{comments.length > 0 ? comments.length : ''}</span>
+                <span className="text-xs font-medium">{comments.length > 0 ? comments.length : ''}</span>
               </button>
               <button onClick={(e) => { e.preventDefault(); }} className="flex items-center space-x-1 text-gray-400 hover:text-green-500 transition-colors">
                 <Share2 size={18} />

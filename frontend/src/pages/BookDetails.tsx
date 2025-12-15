@@ -25,6 +25,9 @@ const BookDetails: React.FC = () => {
   const [myShelves, setMyShelves] = useState<Shelf[]>([]);
   const [shelfMessage, setShelfMessage] = useState<string | null>(null);
   const [isShelfDropdownOpen, setIsShelfDropdownOpen] = useState(false);
+  const [shelfLoading, setShelfLoading] = useState(false);
+  const [showCreateShelf, setShowCreateShelf] = useState(false);
+  const [newShelfName, setNewShelfName] = useState('');
 
   // Scroll to top on mount and when id changes
   useEffect(() => {
@@ -54,6 +57,31 @@ const BookDetails: React.FC = () => {
     } catch (e) {
       console.error(e);
       setShelfMessage("Failed to add");
+    }
+  };
+
+  const handleCreateNewShelf = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newShelfName.trim() || !user) return;
+
+    try {
+      const newShelf = await shelvesApi.createShelf({ name: newShelfName.trim() });
+      setMyShelves([...myShelves, newShelf]);
+      setNewShelfName('');
+      setShowCreateShelf(false);
+      setShelfMessage(`Created "${newShelfName}"!`);
+
+      // Auto add current book to new shelf
+      if (book) {
+        await shelvesApi.addBook(newShelf.id, book.id);
+        setShelfMessage(`Added to "${newShelfName}"!`);
+        shelvesApi.getUserShelves(user.id).then(setMyShelves);
+      }
+
+      setTimeout(() => setShelfMessage(null), 3000);
+    } catch (e) {
+      console.error(e);
+      setShelfMessage("Failed to create shelf");
     }
   };
 
@@ -143,18 +171,90 @@ const BookDetails: React.FC = () => {
               {isShelfDropdownOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
             </button>
 
-            {isShelfDropdownOpen && user && myShelves.length > 0 && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-20 animate-fade-in-down">
-                {myShelves.map(shelf => (
-                  <button
-                    key={shelf.id}
-                    onClick={() => handleAddToShelf(shelf.id)}
-                    className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-brand-50 hover:text-brand-700 transition-colors border-b border-gray-50 last:border-0 capitalize flex justify-between items-center"
-                  >
-                    <span>{shelf.name.replace(/_/g, ' ')}</span>
-                    {shelf.items.some(i => i.book_id === book.id) && <span className="text-xs text-brand-600 font-bold">✓</span>}
-                  </button>
-                ))}
+            {isShelfDropdownOpen && user && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-20 animate-fade-in">
+                {shelfLoading ? (
+                  <div className="p-4 text-center text-gray-400">
+                    <div className="w-5 h-5 border-2 border-gray-200 border-t-brand-600 rounded-full animate-spin mx-auto"></div>
+                  </div>
+                ) : myShelves.length > 0 ? (
+                  <>
+                    <div className="max-h-48 overflow-y-auto">
+                      {myShelves.map(shelf => (
+                        <button
+                          key={shelf.id}
+                          onClick={() => handleAddToShelf(shelf.id)}
+                          disabled={shelf.items.some(i => i.book_id === book.id)}
+                          className={`w-full text-left px-4 py-3 text-sm transition-colors border-b border-gray-50 last:border-0 capitalize flex justify-between items-center ${shelf.items.some(i => i.book_id === book.id)
+                            ? 'bg-green-50 text-green-700 cursor-default'
+                            : 'text-gray-700 hover:bg-brand-50 hover:text-brand-700'
+                            }`}
+                        >
+                          <span>{shelf.name.replace(/_/g, ' ')}</span>
+                          {shelf.items.some(i => i.book_id === book.id) && (
+                            <span className="text-green-600 flex items-center gap-1">
+                              <span className="text-xs">Added</span>
+                              <span>✓</span>
+                            </span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="border-t border-gray-100 p-3">
+                      {showCreateShelf ? (
+                        <form onSubmit={handleCreateNewShelf} className="flex gap-2">
+                          <input
+                            type="text"
+                            value={newShelfName}
+                            onChange={(e) => setNewShelfName(e.target.value)}
+                            placeholder="Shelf name..."
+                            className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-brand-500 focus:outline-none"
+                            autoFocus
+                          />
+                          <button type="submit" className="px-3 py-2 bg-brand-600 text-white text-sm font-medium rounded-lg hover:bg-brand-700">
+                            Add
+                          </button>
+                          <button type="button" onClick={() => setShowCreateShelf(false)} className="px-3 py-2 text-gray-500 hover:text-gray-700">
+                            ✕
+                          </button>
+                        </form>
+                      ) : (
+                        <button
+                          onClick={() => setShowCreateShelf(true)}
+                          className="w-full text-center text-sm text-brand-600 font-medium hover:text-brand-700"
+                        >
+                          + Create New Shelf
+                        </button>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <div className="p-4">
+                    <p className="text-sm text-gray-500 text-center mb-3">No shelves yet. Create one!</p>
+                    {showCreateShelf ? (
+                      <form onSubmit={handleCreateNewShelf} className="flex gap-2">
+                        <input
+                          type="text"
+                          value={newShelfName}
+                          onChange={(e) => setNewShelfName(e.target.value)}
+                          placeholder="Shelf name..."
+                          className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-brand-500 focus:outline-none"
+                          autoFocus
+                        />
+                        <button type="submit" className="px-3 py-2 bg-brand-600 text-white text-sm font-medium rounded-lg hover:bg-brand-700">
+                          Create
+                        </button>
+                      </form>
+                    ) : (
+                      <button
+                        onClick={() => setShowCreateShelf(true)}
+                        className="w-full py-2 bg-brand-50 text-brand-600 rounded-lg text-sm font-medium hover:bg-brand-100"
+                      >
+                        + Create Your First Shelf
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
             )}
 
@@ -165,7 +265,7 @@ const BookDetails: React.FC = () => {
             )}
 
             {shelfMessage && (
-              <div className="mt-2 text-center text-sm text-brand-600 font-medium animate-fade-in">
+              <div className={`mt-2 text-center text-sm font-medium animate-fade-in ${shelfMessage.includes('Failed') ? 'text-red-600' : 'text-green-600'}`}>
                 {shelfMessage}
               </div>
             )}
