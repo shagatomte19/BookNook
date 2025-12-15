@@ -28,6 +28,7 @@ import ChatBot from './components/ChatBot';
 import HashRedirectHandler from './components/HashRedirectHandler';
 
 import Onboarding from './pages/Onboarding';
+import Settings from './pages/Settings';
 
 const ProtectedRoute: React.FC<{ children: React.ReactElement }> = ({ children }) => {
   const { user, isAuthLoading } = useApp();
@@ -87,6 +88,7 @@ const App: React.FC = () => {
               <Route path="/book/:id" element={<ProtectedRoute><BookDetails /></ProtectedRoute>} />
               <Route path="/post/:id" element={<ProtectedRoute><PostDetails /></ProtectedRoute>} />
               <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+              <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
 
               {/* Social Routes */}
               <Route path="/user/:userId" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />

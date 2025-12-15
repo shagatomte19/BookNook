@@ -31,7 +31,7 @@ const Profile: React.FC = () => {
               <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
                 <h1 className="text-3xl font-serif font-bold text-gray-900">{displayName}</h1>
                 <Link
-                  to="/onboarding"
+                  to="/settings"
                   className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-brand-600 bg-brand-50 hover:bg-brand-100 rounded-lg transition-colors"
                 >
                   <Edit size={14} />
