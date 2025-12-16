@@ -95,11 +95,16 @@ async def get_current_user(
             new_user = User(
                 id=token_data.user_id,
                 email=token_data.email,
-                name=token_data.email.split("@")[0], # Default name from email
-                hashed_password="", # No password for social login
+                name=token_data.email.split("@")[0],  # Default name from email
+                nickname=token_data.email.split("@")[0],  # Default nickname too
+                # ❌ REMOVED: hashed_password="",  # This field doesn't exist!
                 is_active=True,
                 is_admin=False,
-                joined_date=datetime.now().strftime("%b %Y")
+                profile_completed=False,  # User needs to complete onboarding
+                joined_date=datetime.now().strftime("%b %Y"),
+                bio="",  # Empty bio initially
+                following=[],  # Empty lists for social features
+                followers=[]
             )
             db.add(new_user)
             db.commit()
@@ -108,6 +113,7 @@ async def get_current_user(
             return new_user
         except Exception as e:
             print(f"❌ Failed to auto-create user: {e}")
+            db.rollback()  # Important: rollback on error
             return None
 
     if not user.is_active:
@@ -215,4 +221,3 @@ async def get_current_admin_from_token(
         )
     
     return user
-
