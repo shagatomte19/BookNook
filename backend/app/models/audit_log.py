@@ -12,7 +12,7 @@ class AuditLog(Base):
     __tablename__ = "audit_logs"
     
     id = Column(String(50), primary_key=True, index=True)
-    user_id = Column(String(50), ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True)
+    user_id = Column(String(50), ForeignKey("profiles.id", ondelete="SET NULL"), nullable=True, index=True)
     user_email = Column(String(255), nullable=True)
     action = Column(String(100), nullable=False, index=True)  # 'create', 'update', 'delete', 'login', etc.
     resource_type = Column(String(100), nullable=True)  # 'book', 'user', 'review', etc.

@@ -21,7 +21,7 @@ class Shelf(Base):
     __tablename__ = "shelves"
     
     id = Column(String(50), primary_key=True, index=True)
-    user_id = Column(String(50), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    user_id = Column(String(50), ForeignKey("profiles.id", ondelete="CASCADE"), nullable=False)
     name = Column(String(255), nullable=False)
     type = Column(String(50), default=ShelfType.CUSTOM)
     is_public = Column(Boolean, default=True)

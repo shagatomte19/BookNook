@@ -12,8 +12,8 @@ class Message(Base):
     __tablename__ = "messages"
     
     id = Column(String(50), primary_key=True, index=True)
-    sender_id = Column(String(50), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
-    receiver_id = Column(String(50), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    sender_id = Column(String(50), ForeignKey("profiles.id", ondelete="CASCADE"), nullable=False, index=True)
+    receiver_id = Column(String(50), ForeignKey("profiles.id", ondelete="CASCADE"), nullable=False, index=True)
     content = Column(Text, nullable=False)
     timestamp = Column(String(100), nullable=True)
     read = Column(Boolean, default=False)

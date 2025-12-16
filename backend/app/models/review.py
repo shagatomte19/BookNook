@@ -13,7 +13,7 @@ class Review(Base):
     
     id = Column(String(50), primary_key=True, index=True)
     book_id = Column(String(50), ForeignKey("books.id", ondelete="CASCADE"), nullable=False, index=True)
-    user_id = Column(String(50), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(String(50), ForeignKey("profiles.id", ondelete="CASCADE"), nullable=False, index=True)
     user_name = Column(String(255), nullable=False)
     rating = Column(Integer, nullable=False)  # 1-5
     content = Column(Text, nullable=True)

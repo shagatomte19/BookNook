@@ -14,7 +14,7 @@ class Group(Base):
     id = Column(String(50), primary_key=True, index=True)
     name = Column(String(255), nullable=False, index=True)
     description = Column(Text, nullable=True)
-    admin_id = Column(String(50), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    admin_id = Column(String(50), ForeignKey("profiles.id", ondelete="SET NULL"), nullable=True)
     image_url = Column(String(500), nullable=True)
     tags = Column(JSON, default=list)  # Array of tag strings
     members = Column(JSON, default=list)  # Array of user IDs
@@ -34,7 +34,7 @@ class GroupPost(Base):
     
     id = Column(String(50), primary_key=True, index=True)
     group_id = Column(String(50), ForeignKey("groups.id", ondelete="CASCADE"), nullable=False, index=True)
-    user_id = Column(String(50), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    user_id = Column(String(50), ForeignKey("profiles.id", ondelete="CASCADE"), nullable=False)
     user_name = Column(String(255), nullable=False)
     user_avatar = Column(String(500), nullable=True)
     content = Column(Text, nullable=True)

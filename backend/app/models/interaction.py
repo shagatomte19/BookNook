@@ -13,7 +13,7 @@ class Comment(Base):
     __tablename__ = "comments"
     
     id = Column(String(50), primary_key=True, index=True)
-    user_id = Column(String(50), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    user_id = Column(String(50), ForeignKey("profiles.id", ondelete="CASCADE"), nullable=False)
     post_id = Column(String(50), ForeignKey("posts.id", ondelete="CASCADE"), nullable=False)
     content = Column(Text, nullable=False)
     
@@ -35,7 +35,7 @@ class Like(Base):
     __tablename__ = "likes"
     
     id = Column(String(50), primary_key=True, index=True)
-    user_id = Column(String(50), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    user_id = Column(String(50), ForeignKey("profiles.id", ondelete="CASCADE"), nullable=False)
     post_id = Column(String(50), ForeignKey("posts.id", ondelete="CASCADE"), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
