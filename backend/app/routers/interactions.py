@@ -121,3 +121,54 @@ async def get_likes(post_id: str, db: Session = Depends(get_db)):
     """Get all likes for a post."""
     likes = db.query(Like).filter(Like.post_id == post_id).all()
     return [LikeResponse.model_validate(like) for like in likes]
+
+
+from app.schemas.interaction import BatchLikeRequest, PostLikeInfo
+from sqlalchemy import func
+
+@router.post("/batch/likes", response_model=List[PostLikeInfo])
+async def get_posts_likes_batch(
+    request: BatchLikeRequest,
+    current_user: User = Depends(get_current_user_required),
+    db: Session = Depends(get_db)
+):
+    """
+    Get like counts and user like status for multiple posts in one request.
+    Optimized to reduce database queries.
+    """
+    post_ids = request.post_ids
+    if not post_ids:
+        return []
+
+    # 1. Get like counts for all requested posts
+    # SELECT post_id, COUNT(*) FROM likes WHERE post_id IN (...) GROUP BY post_id
+    counts_query = (
+        db.query(Like.post_id, func.count(Like.id).label("count"))
+        .filter(Like.post_id.in_(post_ids))
+        .group_by(Like.post_id)
+        .all()
+    )
+    # Convert to dict for fast lookup: {post_id: count}
+    counts_map = {post_id: count for post_id, count in counts_query}
+
+    # 2. Get posts liked by the current user
+    # SELECT post_id FROM likes WHERE user_id = ... AND post_id IN (...)
+    user_likes_query = (
+        db.query(Like.post_id)
+        .filter(Like.user_id == current_user.id)
+        .filter(Like.post_id.in_(post_ids))
+        .all()
+    )
+    # Convert to set for fast lookup
+    user_liked_posts = {post_id for (post_id,) in user_likes_query}
+
+    # 3. Construct response
+    results = []
+    for pid in post_ids:
+        results.append(PostLikeInfo(
+            post_id=pid,
+            likes_count=counts_map.get(pid, 0),
+            is_liked_by_user=pid in user_liked_posts
+        ))
+    
+    return results

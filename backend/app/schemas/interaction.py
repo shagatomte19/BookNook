@@ -30,6 +30,7 @@ class LikeBase(BaseModel):
 class LikeCreate(LikeBase):
     pass
 
+
 class LikeResponse(LikeBase):
     id: str
     user_id: str
@@ -37,3 +38,16 @@ class LikeResponse(LikeBase):
 
     class Config:
         orm_mode = True
+
+
+# Batch Schemas
+class BatchLikeRequest(BaseModel):
+    """Request schema for batch fetching likes."""
+    post_ids: list[str]
+
+
+class PostLikeInfo(BaseModel):
+    """Response schema for like info of a single post."""
+    post_id: str
+    likes_count: int
+    is_liked_by_user: bool
