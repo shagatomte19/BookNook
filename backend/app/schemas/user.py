@@ -1,10 +1,10 @@
 """
 User schemas for request/response validation.
 """
-from pydantic import BaseModel, EmailStr, Field
-from typing import Optional
+from pydantic import BaseModel, EmailStr, Field, field_validator
+from typing import Optional, Any
 from datetime import datetime
-
+from uuid import UUID
 
 
 class UserCreate(BaseModel):
@@ -55,6 +55,23 @@ class UserResponse(BaseModel):
     following: list[str] = []
     followers: list[str] = []
     created_at: Optional[datetime] = None
+    
+    # Validators to convert PostgreSQL UUID objects to strings
+    @field_validator('id', mode='before')
+    @classmethod
+    def convert_id_to_str(cls, v: Any) -> str:
+        """Convert UUID object to string if needed."""
+        if isinstance(v, UUID):
+            return str(v)
+        return v
+    
+    @field_validator('following', 'followers', mode='before')
+    @classmethod
+    def convert_uuid_list_to_str(cls, v: Any) -> list[str]:
+        """Convert list of UUID objects to list of strings."""
+        if v is None:
+            return []
+        return [str(item) if isinstance(item, UUID) else item for item in v]
     
     class Config:
         from_attributes = True

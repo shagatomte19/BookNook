@@ -12,7 +12,8 @@ class User(Base):
     
     __tablename__ = "profiles"  # Match Supabase schema
     
-    id = Column(String(50), primary_key=True, index=True)
+    # id is uuid type in Supabase, use PG_UUID with as_uuid=False to get string representation
+    id = Column(PG_UUID(as_uuid=False), primary_key=True, index=True)
     email = Column(String(255), unique=True, index=True, nullable=False)
     name = Column(String(255), nullable=False)
     # Note: hashed_password removed - Supabase handles auth via auth.users table
