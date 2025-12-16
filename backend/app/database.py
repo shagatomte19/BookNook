@@ -42,4 +42,11 @@ def get_db():
 def init_db():
     """Initialize database tables."""
     from app.models import user, book, author, review, post, group, message
+    
+    # Skip table creation for Supabase - tables are managed via Supabase Dashboard
+    if "postgresql" in settings.DATABASE_URL or "supabase" in settings.DATABASE_URL:
+        print("📦 Using Supabase - skipping table creation (tables managed externally)")
+        return
+    
+    # Only create tables for SQLite (local development)
     Base.metadata.create_all(bind=engine)

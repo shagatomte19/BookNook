@@ -9,7 +9,7 @@ from app.database import Base
 class User(Base):
     """User account model."""
     
-    __tablename__ = "users"
+    __tablename__ = "profiles"  # Match Supabase schema
     
     id = Column(String(50), primary_key=True, index=True)
     email = Column(String(255), unique=True, index=True, nullable=False)
