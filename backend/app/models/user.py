@@ -1,7 +1,8 @@
 """
 User model for authentication and profiles.
 """
-from sqlalchemy import Column, String, Boolean, DateTime, Text, Integer, ARRAY
+from sqlalchemy import Column, String, Boolean, DateTime, Text, Integer
+from sqlalchemy.dialects.postgresql import ARRAY, UUID as PG_UUID
 from sqlalchemy.sql import func
 from app.database import Base
 
@@ -26,9 +27,10 @@ class User(Base):
     nickname = Column(String(100), nullable=True)
     profile_completed = Column(Boolean, default=False)
     
-    # Social features - ARRAY of UUIDs to match Supabase schema
-    following = Column(ARRAY(String), default=[])
-    followers = Column(ARRAY(String), default=[])
+    # Social features - ARRAY of UUIDs to match Supabase uuid[] schema
+    # Using PG_UUID type to match the database column type
+    following = Column(ARRAY(PG_UUID(as_uuid=False)), default=[])
+    followers = Column(ARRAY(PG_UUID(as_uuid=False)), default=[])
     
     # Timestamps
     created_at = Column(DateTime(timezone=True), server_default=func.now())
