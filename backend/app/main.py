@@ -56,7 +56,12 @@ async def startup_event():
     """Initialize database on startup."""
     init_db()
     
-    # Create default admin user if not exists
+    # Skip admin user creation and seeding for Supabase - managed externally
+    if "postgresql" in settings.DATABASE_URL or "supabase" in settings.DATABASE_URL:
+        print("📦 Using Supabase - admin user and data managed via Supabase Dashboard")
+        return
+    
+    # Below only runs for SQLite (local development)
     from app.models.user import User
     from app.services.auth import get_password_hash
     from datetime import datetime
