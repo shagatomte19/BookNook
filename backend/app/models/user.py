@@ -7,14 +7,14 @@ from app.database import Base
 
 
 class User(Base):
-    """User account model."""
+    """User account model - maps to Supabase 'profiles' table."""
     
     __tablename__ = "profiles"  # Match Supabase schema
     
     id = Column(String(50), primary_key=True, index=True)
     email = Column(String(255), unique=True, index=True, nullable=False)
     name = Column(String(255), nullable=False)
-    hashed_password = Column(String(255), nullable=False)
+    # Note: hashed_password removed - Supabase handles auth via auth.users table
     avatar_url = Column(String(500), nullable=True)
     bio = Column(Text, nullable=True, default="")
     is_admin = Column(Boolean, default=False)
@@ -36,3 +36,4 @@ class User(Base):
     
     def __repr__(self):
         return f"<User {self.name} ({self.email})>"
+
